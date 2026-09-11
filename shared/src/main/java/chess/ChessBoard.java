@@ -9,8 +9,28 @@ package chess;
 public class ChessBoard {
     private ChessPiece[][] myBoard;
 
+    private ChessPiece genPiece(String notatedForm){
+        ChessGame.TeamColor color = (notatedForm.charAt(0) == 'w') ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+        ChessPiece.PieceType type;
+
+        char piece = notatedForm.charAt(1);
+
+        type = switch (piece) {
+            case 'r' -> ChessPiece.PieceType.ROOK;
+            case 'k' -> ChessPiece.PieceType.KING;
+            case 'p' -> ChessPiece.PieceType.PAWN;
+            case 'q' -> ChessPiece.PieceType.QUEEN;
+            case 'b' -> ChessPiece.PieceType.BISHOP;
+            case 'n' -> ChessPiece.PieceType.KNIGHT;
+            default -> throw new RuntimeException("Not a real piece");
+        };
+
+        return new ChessPiece(color,type);
+    }
+
     private void generateBoard(){
         this.myBoard = new ChessPiece[8][8];
+
 
     }
 
