@@ -13,4 +13,10 @@ public class NatesTests {
         System.out.println(board.getPiece(new ChessPosition(1,1)).getPieceType());
         System.out.println(board.getPiece(new ChessPosition(1,1)).getTeamColor());
     }
+
+    @Test
+    @DisplayName("present board")
+    public void presentBoard(){
+
+    }
 }

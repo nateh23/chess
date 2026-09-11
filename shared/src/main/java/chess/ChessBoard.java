@@ -30,9 +30,13 @@ public class ChessBoard {
 
     private void generateBoard(){
         this.myBoard = new ChessPiece[8][8];
+        String[] specialsTemplate = {"r","n","b","k","q","b","n","r"};
+        String[] pawnsTemplate = {"p","p","p","p","p","p","p","p"};
 
-        String [][]Template;
-
+        //first white
+        for (int i = 0; i < 8; i++) {
+            addPiece(new ChessPosition(1,i + 1),genPiece("w" + specialsTemplate[i]));
+        }
     }
 
     public ChessBoard() {
