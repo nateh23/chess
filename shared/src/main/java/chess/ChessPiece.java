@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -12,10 +13,12 @@ import java.util.Objects;
 public class ChessPiece {
     private ChessGame.TeamColor myColor;
     private ChessPiece.PieceType myType;
+    private boolean firstMove;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.myColor = pieceColor;
         this.myType = type;
+        this.firstMove = true;
     }
 
     @Override
@@ -65,7 +68,31 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
+    //we read it here 1-8
+    private class moveCalculator{
+        ChessBoard myBoard;
+        ChessPiece myPiece;
+        int [][][] pieceWorld;
+
+        public moveCalculator(ChessBoard board, ChessPiece piece, ChessPosition myPosition){
+            this.myBoard = board;
+            this.myPiece = piece;
+
+            //gonna make a board relative to the piece that points to the overall spots
+            int currentRow = myPosition.getRow();
+            int relativeRank = (piece.myColor == ChessGame.TeamColor.WHITE) ? currentRow : 8 - currentRow;
+
+            System.out.println(relativeRank);
+        }
+    }
+
+    private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition){
+        moveCalculator myCalculator = new moveCalculator(board,this,myPosition);
+        throw new RuntimeException("Not implemented");
+    }
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+
         throw new RuntimeException("Not implemented");
     }
 }

@@ -47,6 +47,14 @@ public class NatesTests {
         return team + pieceType;
     }
 
+    @Test
+    @DisplayName("I guess we doin moves now")
+    public void moveTest(){
+        ChessBoard newBoard = new ChessBoard();
+        newBoard.resetBoard();
+        ChessPiece pawn = newBoard.getPiece(new ChessPosition(2,1));
+        System.out.println(convertPieceToString(pawn));
+    }
 
     public void presentBoard(ChessBoard board){
         for (int i = 0; i < 8; i++){
