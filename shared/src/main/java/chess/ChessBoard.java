@@ -31,11 +31,21 @@ public class ChessBoard {
     private void generateBoard(){
         this.myBoard = new ChessPiece[8][8];
         String[] specialsTemplate = {"r","n","b","k","q","b","n","r"};
-        String[] pawnsTemplate = {"p","p","p","p","p","p","p","p"};
 
-        //first white
+        //first white specials, then pawns
         for (int i = 0; i < 8; i++) {
             addPiece(new ChessPosition(i + 1,1),genPiece("w" + specialsTemplate[i]));
+        }
+        for (int i = 0; i < 8; i++) {
+            addPiece(new ChessPosition(i + 1,2),genPiece("wp"));
+        }
+
+        //now black
+        for (int i = 0; i < 8; i++) {
+            addPiece(new ChessPosition(i + 1,8),genPiece("b" + specialsTemplate[i]));
+        }
+        for (int i = 0; i < 8; i++) {
+            addPiece(new ChessPosition(i + 1,7),genPiece("bp"));
         }
     }
 

@@ -23,7 +23,7 @@ public class NatesTests {
         String pieceType;
 
         if (piece == null){
-            return " ";
+            return "  ";
         }
 
         if (piece.getTeamColor() == ChessGame.TeamColor.BLACK){
@@ -52,13 +52,13 @@ public class NatesTests {
         ChessBoard board = new ChessBoard();
 
         for (int i = 0; i < 8; i++){
-            System.out.println("_________________");
+            System.out.println("___________________________________________________________________________");
             String boardLine = "";
             for (int a = 0; a < 8; a++){
                 ChessPiece pieceFound = board.getPiece(new ChessPosition(a + 1,8 - i));
                 String pieceValue = convertPieceToString(pieceFound);
 
-                boardLine = boardLine + pieceValue + "|";
+                boardLine = boardLine + pieceValue + "   |   ";
             }
             System.out.println(boardLine);
         }
