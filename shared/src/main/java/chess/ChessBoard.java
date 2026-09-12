@@ -71,22 +71,22 @@ public class ChessBoard {
             }
         }
 
-        String[] specialsTemplate = {"r","n","b","k","q","b","n","r"};
+        String[] specialsTemplate = {"r","n","b","q","k","b","n","r"};
 
         //first white specials, then pawns
         for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(i + 1,1),genPiece("w" + specialsTemplate[i]));
+            addPiece(new ChessPosition(1,i + 1),genPiece("w" + specialsTemplate[i]));
         }
         for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(i + 1,2),genPiece("wp"));
+            addPiece(new ChessPosition(2,i + 1),genPiece("wp"));
         }
 
         //now black
         for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(i + 1,8),genPiece("b" + specialsTemplate[i]));
+            addPiece(new ChessPosition(8,i + 1),genPiece("b" + specialsTemplate[i]));
         }
         for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(i + 1,7),genPiece("bp"));
+            addPiece(new ChessPosition(7,i + 1),genPiece("bp"));
         }
     }
 
