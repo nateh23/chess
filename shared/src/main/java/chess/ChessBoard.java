@@ -35,7 +35,7 @@ public class ChessBoard {
 
         //first white
         for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(1,i + 1),genPiece("w" + specialsTemplate[i]));
+            addPiece(new ChessPosition(i + 1,1),genPiece("w" + specialsTemplate[i]));
         }
     }
 
