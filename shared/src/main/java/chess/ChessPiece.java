@@ -90,10 +90,10 @@ public class ChessPiece {
                 board[endPos.getRow()][endPos.getColumn()] = 1;
             }
 
-            for (int b = 0; b < 8; b++){
+            for (int b = 7; b > -1; b--){
                 System.out.println("__________________________");
                 String soFar = "";
-                for (int a = 0; a < 8; a++){
+                for (int a = 7; a > -1; a--){
                     int value = board[b][a];
                     soFar = soFar + value + "||";
                 }
@@ -117,32 +117,11 @@ public class ChessPiece {
             }
 
             //cast down
-            for (int i = this.myPosition.getRow() + 1; i > 1; i--){
+            for (int i = this.myPosition.getRow() - 1; i > 0; i--){
                 ChessPosition newSpot = new ChessPosition(i,this.myPosition.getColumn());
-
+                System.out.println("checking" + i);
                 if (this.myBoard.getPiece(newSpot) == null){
-                    options.add(new ChessMove(this.myPosition,newSpot,null));
-                }else {
-                    break;
-                }
-            }
-
-            //cast right
-            for (int i = this.myPosition.getColumn() + 1; i < 8; i++){
-                ChessPosition newSpot = new ChessPosition(this.myPosition.getRow(),i);
-
-                if (this.myBoard.getPiece(newSpot) == null){
-                    options.add(new ChessMove(this.myPosition,newSpot,null));
-                }else {
-                    break;
-                }
-            }
-
-            //cast left
-            for (int i = this.myPosition.getColumn() + 1; i > 0; i--){
-                ChessPosition newSpot = new ChessPosition(this.myPosition.getRow(),i);
-
-                if (this.myBoard.getPiece(newSpot) == null){
+                    System.out.println("check");
                     options.add(new ChessMove(this.myPosition,newSpot,null));
                 }else {
                     break;
