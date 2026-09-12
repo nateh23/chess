@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.text.Position;
+import javax.swing.text.Utilities;
 
 public class NatesTests {
     @Test
@@ -46,11 +47,8 @@ public class NatesTests {
         return team + pieceType;
     }
 
-    @Test
-    @DisplayName("present board")
-    public void presentBoard(){
-        ChessBoard board = new ChessBoard();
 
+    public void presentBoard(ChessBoard board){
         for (int i = 0; i < 8; i++){
             System.out.println("___________________________________________________________________________");
             String boardLine = "";
@@ -62,6 +60,15 @@ public class NatesTests {
             }
             System.out.println(boardLine);
         }
+    }
 
+    @Test
+    @DisplayName("eternal misery")
+    public void diff(){
+        ChessBoard newBoard = new ChessBoard();
+        newBoard.resetBoard();
+        presentBoard(newBoard);
+        System.out.println("YER");
+        presentBoard(TestUtilities.defaultBoard());
     }
 }

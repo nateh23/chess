@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -30,23 +33,6 @@ public class ChessBoard {
 
     private void generateBoard(){
         this.myBoard = new ChessPiece[8][8];
-        String[] specialsTemplate = {"r","n","b","k","q","b","n","r"};
-
-        //first white specials, then pawns
-        for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(i + 1,1),genPiece("w" + specialsTemplate[i]));
-        }
-        for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(i + 1,2),genPiece("wp"));
-        }
-
-        //now black
-        for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(i + 1,8),genPiece("b" + specialsTemplate[i]));
-        }
-        for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(i + 1,7),genPiece("bp"));
-        }
     }
 
     public ChessBoard() {
@@ -79,7 +65,42 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        this.myBoard = null;
-        generateBoard();
+        for (int i = 0; i < 8; i++){
+            for (int a = 0; a < 8; a++){
+                this.myBoard[i][a] = null;
+            }
+        }
+
+        String[] specialsTemplate = {"r","n","b","k","q","b","n","r"};
+
+        //first white specials, then pawns
+        for (int i = 0; i < 8; i++) {
+            addPiece(new ChessPosition(i + 1,1),genPiece("w" + specialsTemplate[i]));
+        }
+        for (int i = 0; i < 8; i++) {
+            addPiece(new ChessPosition(i + 1,2),genPiece("wp"));
+        }
+
+        //now black
+        for (int i = 0; i < 8; i++) {
+            addPiece(new ChessPosition(i + 1,8),genPiece("b" + specialsTemplate[i]));
+        }
+        for (int i = 0; i < 8; i++) {
+            addPiece(new ChessPosition(i + 1,7),genPiece("bp"));
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessBoard that = (ChessBoard) o;
+        return Objects.deepEquals(myBoard, that.myBoard);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(myBoard);
     }
 }
