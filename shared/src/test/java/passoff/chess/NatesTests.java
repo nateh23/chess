@@ -1,14 +1,12 @@
 package passoff.chess;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.text.Position;
 import javax.swing.text.Utilities;
+import java.util.Collection;
 
 public class NatesTests {
     @Test
@@ -51,9 +49,11 @@ public class NatesTests {
     @DisplayName("I guess we doin moves now")
     public void moveTest(){
         ChessBoard newBoard = new ChessBoard();
-        newBoard.resetBoard();
-        ChessPiece pawn = newBoard.getPiece(new ChessPosition(2,1));
-        System.out.println(convertPieceToString(pawn));
+        newBoard.addPiece(new ChessPosition(4,4),new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
+        ChessPiece myRook = newBoard.getPiece(new ChessPosition(4,4));
+        System.out.println(convertPieceToString(myRook));
+
+        Collection<ChessMove> options = myRook.pieceMoves(newBoard,new ChessPosition(4,4));
     }
 
     public void presentBoard(ChessBoard board){

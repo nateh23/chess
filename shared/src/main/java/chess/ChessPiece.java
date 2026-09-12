@@ -68,31 +68,115 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    //we read it here 1-8
-    private class moveCalculator{
+    //util that will be resued by other pieces
+    private class calcUtility{
         ChessBoard myBoard;
+        ChessPosition myPosition;
         ChessPiece myPiece;
-        int [][][] pieceWorld;
 
-        public moveCalculator(ChessBoard board, ChessPiece piece, ChessPosition myPosition){
+        public calcUtility(ChessBoard board, ChessPosition position, ChessPiece piece){
             this.myBoard = board;
+            this.myPosition = position;
             this.myPiece = piece;
+        }
 
-            //gonna make a board relative to the piece that points to the overall spots
-            int currentRow = myPosition.getRow();
-            int relativeRank = (piece.myColor == ChessGame.TeamColor.WHITE) ? currentRow : 8 - currentRow;
+        public void debugViewSet(Collection<ChessMove>options){
+            int[][]board = new int[8][8];
 
-            System.out.println(relativeRank);
+            board[myPosition.getRow()][myPosition.getColumn()] = 3;
+
+            for (ChessMove move: options){
+                ChessPosition endPos = move.getEndPosition();
+                board[endPos.getRow()][endPos.getColumn()] = 1;
+            }
+
+            for (int b = 0; b < 8; b++){
+                System.out.println("__________________________");
+                String soFar = "";
+                for (int a = 0; a < 8; a++){
+                    int value = board[b][a];
+                    soFar = soFar + value + "||";
+                }
+
+                System.out.println(soFar);
+            }
+        }
+
+        public Collection<ChessMove> rookSet(){
+            Collection<ChessMove> options = new ArrayList<>();
+
+            //cast up
+            for (int i = this.myPosition.getRow() + 1; i < 8; i++){
+                ChessPosition newSpot = new ChessPosition(i,this.myPosition.getColumn());
+
+                if (this.myBoard.getPiece(newSpot) == null){
+                    options.add(new ChessMove(this.myPosition,newSpot,null));
+                }else {
+                    break;
+                }
+            }
+
+            //cast down
+            for (int i = this.myPosition.getRow() + 1; i > 1; i--){
+                ChessPosition newSpot = new ChessPosition(i,this.myPosition.getColumn());
+
+                if (this.myBoard.getPiece(newSpot) == null){
+                    options.add(new ChessMove(this.myPosition,newSpot,null));
+                }else {
+                    break;
+                }
+            }
+
+            //cast right
+            for (int i = this.myPosition.getColumn() + 1; i < 8; i++){
+                ChessPosition newSpot = new ChessPosition(this.myPosition.getRow(),i);
+
+                if (this.myBoard.getPiece(newSpot) == null){
+                    options.add(new ChessMove(this.myPosition,newSpot,null));
+                }else {
+                    break;
+                }
+            }
+
+            //cast left
+            for (int i = this.myPosition.getColumn() + 1; i > 0; i--){
+                ChessPosition newSpot = new ChessPosition(this.myPosition.getRow(),i);
+
+                if (this.myBoard.getPiece(newSpot) == null){
+                    options.add(new ChessMove(this.myPosition,newSpot,null));
+                }else {
+                    break;
+                }
+            }
+
+            return options;
         }
     }
 
+    //brains
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition){
-        moveCalculator myCalculator = new moveCalculator(board,this,myPosition);
         throw new RuntimeException("Not implemented");
     }
 
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+    private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition){
+        Collection<ChessMove> options;
+        calcUtility myUtil = new calcUtility(board,myPosition,this);
 
-        throw new RuntimeException("Not implemented");
+        options = myUtil.rookSet();
+        myUtil.debugViewSet(options);
+
+        return myUtil.rookSet();
+    }
+
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> options;
+
+        options = switch(this.myType){
+            case PAWN -> pawnMoves(board,myPosition);
+            case ROOK -> rookMoves(board,myPosition);
+            default -> throw new RuntimeException("This piece doesn't have a type?");
+        };
+
+        return options;
     }
 }
