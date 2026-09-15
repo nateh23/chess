@@ -57,6 +57,10 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) { //THIS ACCOUNTS FOR EVERYTHING BEING SET FROM 1 TO 8, NOT 0 TO 7
+        if (position.getRow() > 8 || position.getColumn() > 8){
+            return null;
+        }
+
         return this.myBoard[position.getRow() - 1][position.getColumn() - 1];
     }
 

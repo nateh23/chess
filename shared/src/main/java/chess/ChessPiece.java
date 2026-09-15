@@ -71,13 +71,24 @@ public class ChessPiece {
         ChessBoard myBoard;
         ChessPosition myPosition;
         ChessPiece myPiece;
-        PieceType promotionPiece = null;
 
-        public calcUtility(ChessBoard board, ChessPosition position, ChessPiece piece, PieceType promotion){
+        public calcUtility(ChessBoard board, ChessPosition position, ChessPiece piece){
             this.myBoard = board;
             this.myPosition = position;
             this.myPiece = piece;
-            this.promotionPiece = promotion;
+        }
+
+        public boolean checkForOpponent(int rowOffset, int colOffset){
+            if (rowOffset == 0  && colOffset == 0) {
+                throw new RuntimeException("Holy nothingburger");
+            }
+
+            int slideRowPos = this.myPosition.getRow() + rowOffset;
+            int slideColPos = this.myPosition.getColumn() + colOffset;
+            ChessPosition foundPos = new ChessPosition(slideRowPos,slideColPos);
+
+            return slideColPos >= 1 && slideColPos <= 8 && slideRowPos >= 1 && slideRowPos <= 8 &&
+                    (this.myBoard.getPiece(foundPos) != null && this.myBoard.getPiece(foundPos).getTeamColor() != this.myPiece.myColor);
         }
 
         public Collection<ChessMove> step(int rowOffset, int colOffset){
@@ -94,7 +105,7 @@ public class ChessPiece {
 
             if (slideColPos >= 1 && slideColPos <= 8 && slideRowPos >= 1 && slideRowPos <= 8 &&
                     (this.myBoard.getPiece(foundPos) == null || this.myBoard.getPiece(foundPos).getTeamColor() != this.myPiece.myColor)){
-                results.add(new ChessMove(this.myPosition,foundPos,this.promotionPiece));
+                results.add(new ChessMove(this.myPosition,foundPos,null));
             }
 
             return results;
@@ -113,10 +124,10 @@ public class ChessPiece {
             while (slideColPos >= 1 && slideColPos <= 8 && slideRowPos >= 1 && slideRowPos <= 8){
                 ChessPosition foundPos = new ChessPosition(slideRowPos,slideColPos);
                 if (this.myBoard.getPiece(foundPos) == null){
-                    results.add(new ChessMove(this.myPosition,foundPos,this.promotionPiece));
+                    results.add(new ChessMove(this.myPosition,foundPos,null));
                 }else{
                     if (this.myBoard.getPiece(foundPos).getTeamColor() != this.myPiece.myColor){
-                        results.add(new ChessMove(this.myPosition,foundPos,this.promotionPiece));
+                        results.add(new ChessMove(this.myPosition,foundPos,null));
                     }
                     break;
                 }
@@ -132,13 +143,9 @@ public class ChessPiece {
     }
 
     //brains
-    private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition){
-        throw new RuntimeException("Not implemented");
-    }
-
     private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> options = new ArrayList<>();
-        calcUtility myUtil = new calcUtility(board,myPosition,this,null);
+        calcUtility myUtil = new calcUtility(board,myPosition,this);
 
         options.addAll(myUtil.slide(1,0));
         options.addAll(myUtil.slide(-1,0));
@@ -150,7 +157,7 @@ public class ChessPiece {
 
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> options = new ArrayList<>();
-        calcUtility myUtil = new calcUtility(board,myPosition,this,null);
+        calcUtility myUtil = new calcUtility(board,myPosition,this);
 
         options.addAll(myUtil.slide(1,1));
         options.addAll(myUtil.slide(-1,1));
@@ -162,7 +169,7 @@ public class ChessPiece {
 
     private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> options = new ArrayList<>();
-        calcUtility myUtil = new calcUtility(board,myPosition,this,null);
+        calcUtility myUtil = new calcUtility(board,myPosition,this);
 
         options.addAll(myUtil.slide(1,0));
         options.addAll(myUtil.slide(-1,0));
@@ -178,7 +185,7 @@ public class ChessPiece {
 
     private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> options = new ArrayList<>();
-        calcUtility myUtil = new calcUtility(board,myPosition,this,null);
+        calcUtility myUtil = new calcUtility(board,myPosition,this);
 
         options.addAll(myUtil.step(1,0));
         options.addAll(myUtil.step(-1,0));
@@ -192,6 +199,61 @@ public class ChessPiece {
         return options;
     }
 
+    private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition){
+        Collection<ChessMove> options = new ArrayList<>();
+        calcUtility myUtil = new calcUtility(board,myPosition,this);
+
+        options.addAll(myUtil.step(2,-1));
+        options.addAll(myUtil.step(1,-2));
+        options.addAll(myUtil.step(2,1));
+        options.addAll(myUtil.step(1,2));
+        options.addAll(myUtil.step(-2,-1));
+        options.addAll(myUtil.step(-1,-2));
+        options.addAll(myUtil.step(-2,1));
+        options.addAll(myUtil.step(-1,2));
+
+        return options;
+    }
+
+    private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition){
+        Collection<ChessMove> options = new ArrayList<>();
+        calcUtility myUtil = new calcUtility(board,myPosition,this);
+
+        int directionMultiplier = (this.myColor == ChessGame.TeamColor.WHITE) ? 1 : -1;
+
+        if (board.getPiece(new ChessPosition(myPosition.getRow() + directionMultiplier,myPosition.getColumn())) != null){
+            if ((this.myColor == ChessGame.TeamColor.WHITE && myPosition.getRow() == 2) ||
+                    (this.myColor == ChessGame.TeamColor.BLACK && myPosition.getRow() == 7)
+            ){
+                options.addAll(myUtil.step(2 * directionMultiplier,0));
+            }
+        }
+
+        options.addAll(myUtil.step(directionMultiplier,0));
+
+        if (myUtil.checkForOpponent(directionMultiplier,-1)){
+            options.addAll(myUtil.step(directionMultiplier,-1));
+        }
+
+        if (myUtil.checkForOpponent(directionMultiplier,1)){
+            options.addAll(myUtil.step(directionMultiplier,1));
+        }
+
+        if ((this.myColor == ChessGame.TeamColor.WHITE && myPosition.getRow() == 5) ||
+                (this.myColor == ChessGame.TeamColor.BLACK && myPosition.getRow() == 4)
+        ){
+            if (myUtil.checkForOpponent(0,-1)){
+                options.addAll(myUtil.step(directionMultiplier,-1));
+            }
+
+            if (myUtil.checkForOpponent(0,1)){
+                options.addAll(myUtil.step(directionMultiplier,1));
+            }
+        }
+
+        return options;
+    }
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> options;
 
@@ -201,6 +263,7 @@ public class ChessPiece {
             case BISHOP -> bishopMoves(board,myPosition);
             case QUEEN -> queenMoves(board,myPosition);
             case KING -> kingMoves(board,myPosition);
+            case KNIGHT -> knightMoves(board,myPosition);
             default -> throw new RuntimeException("This piece doesn't have a type?");
         };
 
