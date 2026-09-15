@@ -120,16 +120,15 @@ public class ChessPiece {
                     (this.myBoard.getPiece(foundPos) == null || this.myBoard.getPiece(foundPos).getTeamColor() != this.myPiece.myColor)){
 
                 //if im a pawn and im at 8 or 1 i can be promoted here!
-                if (this.myPiece.getPieceType() == PieceType.PAWN){
-                    if ((this.myPiece.getTeamColor() == ChessGame.TeamColor.BLACK && foundPos.getRow() == 1) ||
-                        (this.myPiece.getTeamColor() == ChessGame.TeamColor.WHITE && foundPos.getRow() == 8)
-                    ){
+                if (this.myPiece.getPieceType() == PieceType.PAWN &&
+                        ((this.myPiece.getTeamColor() == ChessGame.TeamColor.BLACK && foundPos.getRow() == 1) ||
+                        (this.myPiece.getTeamColor() == ChessGame.TeamColor.WHITE && foundPos.getRow() == 8))
+                ){
                         results.add(new ChessMove(this.myPosition,foundPos,PieceType.BISHOP));
-                        results.add(new ChessMove(this.myPosition,foundPos,PieceType.KING));
                         results.add(new ChessMove(this.myPosition,foundPos,PieceType.QUEEN));
                         results.add(new ChessMove(this.myPosition,foundPos,PieceType.ROOK));
                         results.add(new ChessMove(this.myPosition,foundPos,PieceType.KNIGHT));
-                    }
+
                 }else{
                     results.add(new ChessMove(this.myPosition,foundPos,null));
                 }
@@ -252,7 +251,9 @@ public class ChessPiece {
             if ((this.myColor == ChessGame.TeamColor.WHITE && myPosition.getRow() == 2) ||
                     (this.myColor == ChessGame.TeamColor.BLACK && myPosition.getRow() == 7)
             ){
-                options.addAll(myUtil.step(2 * directionMultiplier,0));
+                if (!myUtil.checkForOpponent(2 * directionMultiplier,0)){
+                    options.addAll(myUtil.step(2 * directionMultiplier,0));
+                }
             }
         }
 
