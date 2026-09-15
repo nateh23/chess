@@ -49,7 +49,8 @@ public class NatesTests {
     @DisplayName("I guess we doin moves now")
     public void moveTest(){
         ChessBoard newBoard = new ChessBoard();
-        newBoard.addPiece(new ChessPosition(4,4),new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
+        newBoard.addPiece(new ChessPosition(4,4),new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
+        newBoard.addPiece(new ChessPosition(4,5),new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
         ChessPiece myRook = newBoard.getPiece(new ChessPosition(4,4));
         System.out.println(convertPieceToString(myRook));
 

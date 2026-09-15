@@ -80,6 +80,25 @@ public class ChessPiece {
             this.promotionPiece = promotion;
         }
 
+        public Collection<ChessMove> step(int rowOffset, int colOffset){
+            if (rowOffset == 0  && colOffset == 0) {
+                throw new RuntimeException("Holy nothingburger");
+            }
+
+            Collection<ChessMove> results = new ArrayList<>();
+
+            int slideRowPos = this.myPosition.getRow() + rowOffset;
+            int slideColPos = this.myPosition.getColumn() + colOffset;
+
+            ChessPosition foundPos = new ChessPosition(slideRowPos,slideColPos);
+
+            if (this.myBoard.getPiece(foundPos) == null || this.myBoard.getPiece(foundPos).getTeamColor() != this.myPiece.myColor){
+                results.add(new ChessMove(this.myPosition,foundPos,this.promotionPiece));
+            }
+
+            return results;
+        }
+
         public Collection<ChessMove> slide(int rowDir, int colDir){
             if (rowDir == 0  && colDir == 0) {
                 throw new RuntimeException("Holy nothingburger");
@@ -91,14 +110,21 @@ public class ChessPiece {
             int slideColPos = this.myPosition.getColumn() + colDir;
 
             while (slideColPos >= 1 && slideColPos <= 8 && slideRowPos >= 1 && slideRowPos <= 8){
-                if (this.myBoard.getPiece(new ChessPosition(slideRowPos,slideColPos)) == null){
-                    System.out.println("DING DING DING");
-                    results.add(new ChessMove(this.myPosition,new ChessPosition(slideRowPos,slideColPos),this.promotionPiece));
+                ChessPosition foundPos = new ChessPosition(slideRowPos,slideColPos);
+                if (this.myBoard.getPiece(foundPos) == null){
+                    results.add(new ChessMove(this.myPosition,foundPos,this.promotionPiece));
+                }else{
+                    if (this.myBoard.getPiece(foundPos).getTeamColor() != this.myPiece.myColor){
+                        results.add(new ChessMove(this.myPosition,foundPos,this.promotionPiece));
+                    }
+                    break;
                 }
+
 
                 slideRowPos += rowDir;
                 slideColPos += colDir;
             }
+
             return results;
         }
 
@@ -121,12 +147,42 @@ public class ChessPiece {
         return options;
     }
 
+    private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition){
+        Collection<ChessMove> options = new ArrayList<>();
+        calcUtility myUtil = new calcUtility(board,myPosition,this,null);
+
+        options.addAll(myUtil.slide(1,1));
+        options.addAll(myUtil.slide(-1,1));
+        options.addAll(myUtil.slide(-1,-1));
+        options.addAll(myUtil.slide(1,-1));
+
+        return options;
+    }
+
+    private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition){
+        Collection<ChessMove> options = new ArrayList<>();
+        calcUtility myUtil = new calcUtility(board,myPosition,this,null);
+
+        options.addAll(myUtil.slide(1,0));
+        options.addAll(myUtil.slide(-1,0));
+        options.addAll(myUtil.slide(0,1));
+        options.addAll(myUtil.slide(0,-1));
+        options.addAll(myUtil.slide(1,1));
+        options.addAll(myUtil.slide(-1,1));
+        options.addAll(myUtil.slide(-1,-1));
+        options.addAll(myUtil.slide(1,-1));
+
+        return options;
+    }
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> options;
 
         options = switch(this.myType){
             case PAWN -> pawnMoves(board,myPosition);
             case ROOK -> rookMoves(board,myPosition);
+            case BISHOP -> bishopMoves(board,myPosition);
+            case QUEEN -> queenMoves(board,myPosition);
             default -> throw new RuntimeException("This piece doesn't have a type?");
         };
 
