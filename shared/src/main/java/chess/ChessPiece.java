@@ -90,10 +90,7 @@ public class ChessPiece {
             int slideRowPos = this.myPosition.getRow() + rowDir;
             int slideColPos = this.myPosition.getColumn() + colDir;
 
-            System.out.println("starting row: " + slideRowPos + "; starting col: " + slideColPos);
-
             while (slideColPos >= 1 && slideColPos <= 8 && slideRowPos >= 1 && slideRowPos <= 8){
-                System.out.println("checking row: " + slideRowPos + "; checking col: " + slideColPos);
                 if (this.myBoard.getPiece(new ChessPosition(slideRowPos,slideColPos)) == null){
                     System.out.println("DING DING DING");
                     results.add(new ChessMove(this.myPosition,new ChessPosition(slideRowPos,slideColPos),this.promotionPiece));
@@ -117,6 +114,9 @@ public class ChessPiece {
         calcUtility myUtil = new calcUtility(board,myPosition,this,null);
 
         options.addAll(myUtil.slide(1,0));
+        options.addAll(myUtil.slide(-1,0));
+        options.addAll(myUtil.slide(0,1));
+        options.addAll(myUtil.slide(0,-1));
 
         return options;
     }
