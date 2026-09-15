@@ -56,7 +56,7 @@ public class ChessBoard {
      * @return Either the piece at the position, or null if no piece is at that
      * position
      */
-    public ChessPiece getPiece(ChessPosition position) {
+    public ChessPiece getPiece(ChessPosition position) { //THIS ACCOUNTS FOR EVERYTHING BEING SET FROM 1 TO 8, NOT 0 TO 7
         return this.myBoard[position.getRow() - 1][position.getColumn() - 1];
     }
 
@@ -74,19 +74,19 @@ public class ChessBoard {
         String[] specialsTemplate = {"r","n","b","q","k","b","n","r"};
 
         //first white specials, then pawns
-        for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(1,i + 1),genPiece("w" + specialsTemplate[i]));
+        for (int i = 1; i <= 8; i++) {
+            addPiece(new ChessPosition(1,i),genPiece("w" + specialsTemplate[i - 1]));
         }
-        for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(2,i + 1),genPiece("wp"));
+        for (int i = 1; i <= 8; i++) {
+            addPiece(new ChessPosition(2,i),genPiece("wp"));
         }
 
         //now black
-        for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(8,i + 1),genPiece("b" + specialsTemplate[i]));
+        for (int i = 1; i <= 8; i++) {
+            addPiece(new ChessPosition(8,i),genPiece("b" + specialsTemplate[i - 1]));
         }
-        for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(7,i + 1),genPiece("bp"));
+        for (int i = 1; i <= 8; i++) {
+            addPiece(new ChessPosition(7,i),genPiece("bp"));
         }
     }
 

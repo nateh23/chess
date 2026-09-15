@@ -59,7 +59,7 @@ public class NatesTests {
     public void presentBoard(ChessBoard board){
         for (int i = 0; i < 8; i++){
             System.out.println("___________________________________________________________________________");
-            String boardLine = "";
+            String boardLine = (8 - i) + " ";
             for (int a = 0; a < 8; a++){
                 ChessPiece pieceFound = board.getPiece(new ChessPosition(8 - i,a + 1));
                 String pieceValue = convertPieceToString(pieceFound);
