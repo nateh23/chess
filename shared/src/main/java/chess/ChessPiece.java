@@ -91,6 +91,19 @@ public class ChessPiece {
                     (this.myBoard.getPiece(foundPos) != null && this.myBoard.getPiece(foundPos).getTeamColor() != this.myPiece.myColor);
         }
 
+        public boolean isBlocked(int rowOffset, int colOffset){
+            if (rowOffset == 0  && colOffset == 0) {
+                throw new RuntimeException("Holy nothingburger");
+            }
+
+            int slideRowPos = this.myPosition.getRow() + rowOffset;
+            int slideColPos = this.myPosition.getColumn() + colOffset;
+            ChessPosition foundPos = new ChessPosition(slideRowPos,slideColPos);
+
+            return slideColPos >= 1 && slideColPos <= 8 && slideRowPos >= 1 && slideRowPos <= 8 &&
+                    (this.myBoard.getPiece(foundPos) != null);
+        }
+
         public Collection<ChessMove> step(int rowOffset, int colOffset){
             if (rowOffset == 0  && colOffset == 0) {
                 throw new RuntimeException("Holy nothingburger");
@@ -105,7 +118,21 @@ public class ChessPiece {
 
             if (slideColPos >= 1 && slideColPos <= 8 && slideRowPos >= 1 && slideRowPos <= 8 &&
                     (this.myBoard.getPiece(foundPos) == null || this.myBoard.getPiece(foundPos).getTeamColor() != this.myPiece.myColor)){
-                results.add(new ChessMove(this.myPosition,foundPos,null));
+
+                //if im a pawn and im at 8 or 1 i can be promoted here!
+                if (this.myPiece.getPieceType() == PieceType.PAWN){
+                    if ((this.myPiece.getTeamColor() == ChessGame.TeamColor.BLACK && foundPos.getRow() == 1) ||
+                        (this.myPiece.getTeamColor() == ChessGame.TeamColor.WHITE && foundPos.getRow() == 8)
+                    ){
+                        results.add(new ChessMove(this.myPosition,foundPos,PieceType.BISHOP));
+                        results.add(new ChessMove(this.myPosition,foundPos,PieceType.KING));
+                        results.add(new ChessMove(this.myPosition,foundPos,PieceType.QUEEN));
+                        results.add(new ChessMove(this.myPosition,foundPos,PieceType.ROOK));
+                        results.add(new ChessMove(this.myPosition,foundPos,PieceType.KNIGHT));
+                    }
+                }else{
+                    results.add(new ChessMove(this.myPosition,foundPos,null));
+                }
             }
 
             return results;
@@ -221,7 +248,7 @@ public class ChessPiece {
 
         int directionMultiplier = (this.myColor == ChessGame.TeamColor.WHITE) ? 1 : -1;
 
-        if (board.getPiece(new ChessPosition(myPosition.getRow() + directionMultiplier,myPosition.getColumn())) != null){
+        if (board.getPiece(new ChessPosition(myPosition.getRow() + directionMultiplier,myPosition.getColumn())) == null){
             if ((this.myColor == ChessGame.TeamColor.WHITE && myPosition.getRow() == 2) ||
                     (this.myColor == ChessGame.TeamColor.BLACK && myPosition.getRow() == 7)
             ){
@@ -229,7 +256,9 @@ public class ChessPiece {
             }
         }
 
-        options.addAll(myUtil.step(directionMultiplier,0));
+        if (!myUtil.isBlocked(directionMultiplier,0)){
+            options.addAll(myUtil.step(directionMultiplier,0));
+        }
 
         if (myUtil.checkForOpponent(directionMultiplier,-1)){
             options.addAll(myUtil.step(directionMultiplier,-1));
