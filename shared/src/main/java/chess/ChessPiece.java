@@ -13,12 +13,10 @@ import java.util.Objects;
 public class ChessPiece {
     private ChessGame.TeamColor myColor;
     private ChessPiece.PieceType myType;
-    private boolean firstMove;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.myColor = pieceColor;
         this.myType = type;
-        this.firstMove = true;
     }
 
     @Override
@@ -73,13 +71,39 @@ public class ChessPiece {
         ChessBoard myBoard;
         ChessPosition myPosition;
         ChessPiece myPiece;
+        PieceType promotionPiece = null;
 
-        public calcUtility(ChessBoard board, ChessPosition position, ChessPiece piece){
+        public calcUtility(ChessBoard board, ChessPosition position, ChessPiece piece, PieceType promotion){
             this.myBoard = board;
             this.myPosition = position;
             this.myPiece = piece;
+            this.promotionPiece = promotion;
         }
 
+        public Collection<ChessMove> slide(int rowDir, int colDir){
+            if (rowDir == 0  && colDir == 0) {
+                throw new RuntimeException("Holy nothingburger");
+            }
+
+            Collection<ChessMove> results = new ArrayList<>();
+
+            int slideRowPos = this.myPosition.getRow() + rowDir;
+            int slideColPos = this.myPosition.getColumn() + colDir;
+
+            System.out.println("starting row: " + slideRowPos + "; starting col: " + slideColPos);
+
+            while (slideColPos >= 1 && slideColPos <= 8 && slideRowPos >= 1 && slideRowPos <= 8){
+                System.out.println("checking row: " + slideRowPos + "; checking col: " + slideColPos);
+                if (this.myBoard.getPiece(new ChessPosition(slideRowPos,slideColPos)) == null){
+                    System.out.println("DING DING DING");
+                    results.add(new ChessMove(this.myPosition,new ChessPosition(slideRowPos,slideColPos),this.promotionPiece));
+                }
+
+                slideRowPos += rowDir;
+                slideColPos += colDir;
+            }
+            return results;
+        }
 
     }
 
@@ -89,24 +113,23 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition){
-        Collection<ChessMove> options;
-        calcUtility myUtil = new calcUtility(board,myPosition,this);
+        Collection<ChessMove> options = new ArrayList<>();
+        calcUtility myUtil = new calcUtility(board,myPosition,this,null);
 
-        options = myUtil.rookSet();
+        options.addAll(myUtil.slide(1,0));
 
         return options;
     }
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
-//        Collection<ChessMove> options;
-//
-//        options = switch(this.myType){
-//            case PAWN -> pawnMoves(board,myPosition);
-//            case ROOK -> rookMoves(board,myPosition);
-//            default -> throw new RuntimeException("This piece doesn't have a type?");
-//        };
-//
-//        return options;
+        Collection<ChessMove> options;
+
+        options = switch(this.myType){
+            case PAWN -> pawnMoves(board,myPosition);
+            case ROOK -> rookMoves(board,myPosition);
+            default -> throw new RuntimeException("This piece doesn't have a type?");
+        };
+
+        return options;
     }
 }
