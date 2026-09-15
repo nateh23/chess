@@ -92,7 +92,8 @@ public class ChessPiece {
 
             ChessPosition foundPos = new ChessPosition(slideRowPos,slideColPos);
 
-            if (this.myBoard.getPiece(foundPos) == null || this.myBoard.getPiece(foundPos).getTeamColor() != this.myPiece.myColor){
+            if (slideColPos >= 1 && slideColPos <= 8 && slideRowPos >= 1 && slideRowPos <= 8 &&
+                    (this.myBoard.getPiece(foundPos) == null || this.myBoard.getPiece(foundPos).getTeamColor() != this.myPiece.myColor)){
                 results.add(new ChessMove(this.myPosition,foundPos,this.promotionPiece));
             }
 
@@ -175,6 +176,22 @@ public class ChessPiece {
         return options;
     }
 
+    private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition){
+        Collection<ChessMove> options = new ArrayList<>();
+        calcUtility myUtil = new calcUtility(board,myPosition,this,null);
+
+        options.addAll(myUtil.step(1,0));
+        options.addAll(myUtil.step(-1,0));
+        options.addAll(myUtil.step(0,1));
+        options.addAll(myUtil.step(0,-1));
+        options.addAll(myUtil.step(1,1));
+        options.addAll(myUtil.step(-1,1));
+        options.addAll(myUtil.step(-1,-1));
+        options.addAll(myUtil.step(1,-1));
+
+        return options;
+    }
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> options;
 
@@ -183,6 +200,7 @@ public class ChessPiece {
             case ROOK -> rookMoves(board,myPosition);
             case BISHOP -> bishopMoves(board,myPosition);
             case QUEEN -> queenMoves(board,myPosition);
+            case KING -> kingMoves(board,myPosition);
             default -> throw new RuntimeException("This piece doesn't have a type?");
         };
 
