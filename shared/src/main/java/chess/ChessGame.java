@@ -28,8 +28,7 @@ public class ChessGame {
             for (int column = 1; column <= 8; column++){
                 ChessPosition calcPos = new ChessPosition(row,column);
                 ChessPiece iterPiece = this.myBoard.getPiece(calcPos);
-
-                if (iterPiece.getPieceType() == ChessPiece.PieceType.KING && iterPiece.getTeamColor() == color){
+                if (iterPiece != null && iterPiece.getPieceType() == ChessPiece.PieceType.KING && iterPiece.getTeamColor() == color){
                     return calcPos;
                 }
             }
@@ -65,7 +64,7 @@ public class ChessGame {
      * target spots are where an enemy piece could land
      */
 
-    public HashSet<ChessPosition> findTargetSpots(TeamColor color){
+    private HashSet<ChessPosition> findTargetSpots(TeamColor color){
         HashSet<ChessPosition> optionsAvailable = new HashSet<>();
 
         for (int row = 1; row <= 8; row++){
@@ -140,7 +139,14 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        matchBoard();
+
+        TeamColor otherTeam = (teamColor == TeamColor.WHITE)? TeamColor.BLACK : TeamColor.WHITE;
+
+        ChessPosition kingPosition = getKingPosition(teamColor);
+        Collection<ChessPosition> enemyTargets = findTargetSpots(otherTeam);
+
+        return (enemyTargets.contains(kingPosition));
     }
 
     /**

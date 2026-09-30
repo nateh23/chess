@@ -101,23 +101,21 @@ public class NatesTests {
     @Test
     @DisplayName("dummyboard setup")
     public void gameStruc(){
-        ChessGame newGame = new ChessGame();
-        ChessBoard newBoard = new ChessBoard();
-        newBoard.resetBoard();
-        newGame.setBoard(newBoard);
+//        ChessGame newGame = new ChessGame();
+//        ChessBoard newBoard = new ChessBoard();
+//        newBoard.resetBoard();
+//        newGame.setBoard(newBoard);
+//        ChessPosition yer = new ChessPosition(7,4);
+//        ChessPiece testPawn = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+//        newBoard.addPiece(yer,testPawn);
+//
 //        newGame.matchBoard();
-//
-//        ChessPosition startPos = new ChessPosition(2,1);
-//        ChessPosition endPos = new ChessPosition(4,1);
-//        ChessMove newMove = new ChessMove(startPos,endPos,null);
-//
-//        newGame.dummyMove(newMove);
-//
 //        Collection<ChessPosition> moves = newGame.findTargetSpots(ChessGame.TeamColor.WHITE);
 //        presentMoves(moves);
 //
-//       System.out.println(moves.contains(new ChessPosition(3,2)));
+//        ChessPosition kingPos = newGame.getKingPosition(ChessGame.TeamColor.BLACK);
+//        System.out.println(kingPos.getRow() + "  " + kingPos.getColumn());
 //
-//        presentBoard(newBoard);
+//        System.out.println(newGame.isInCheck(ChessGame.TeamColor.BLACK));
     }
 }
