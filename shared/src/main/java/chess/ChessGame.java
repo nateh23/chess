@@ -3,6 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * A class that can manage a chess game, making moves on a board
@@ -14,7 +15,7 @@ public class ChessGame {
     ChessBoard myBoard;
 //    rule for dummyBoard, anytime we touch dummyboard it should be set to match myBoard at the end and beginning to
     // ensure it can be reused.
-    ChessBoard dummyBoard;
+    private ChessBoard dummyBoard;
     TeamColor currentTeamTurn;
 
     /**
@@ -37,7 +38,7 @@ public class ChessGame {
         return null;
     }
 
-    public boolean isInDummyCheck(TeamColor teamColor) {
+    private boolean isInDummyCheck(TeamColor teamColor) {
         TeamColor otherTeam = (teamColor == TeamColor.WHITE)? TeamColor.BLACK : TeamColor.WHITE;
 
         ChessPosition kingPosition = getKingDummyPosition(teamColor);
@@ -120,6 +121,10 @@ public class ChessGame {
 
     public ChessGame() {
         this.dummyBoard = new ChessBoard();
+        this.myBoard = new ChessBoard();
+        this.myBoard.resetBoard();
+        this.setTeamTurn(TeamColor.WHITE);
+        this.matchBoard();
     }
 
     /**
@@ -136,6 +141,20 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
         this.currentTeamTurn = team;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return Objects.equals(myBoard, chessGame.myBoard) && Objects.equals(dummyBoard, chessGame.dummyBoard) && currentTeamTurn == chessGame.currentTeamTurn;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(myBoard, dummyBoard, currentTeamTurn);
     }
 
     /**
@@ -181,7 +200,27 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPiece myPiece = this.myBoard.getPiece(move.getStartPosition());
+        if (myPiece == null){
+            throw new InvalidMoveException("There is no piece lb");
+        }
+
+        Collection<ChessMove> pieceMoves = validMoves(move.getStartPosition());
+
+        if (pieceMoves.contains(move) && this.getTeamTurn() == myPiece.getTeamColor()){
+            if (move.getPromotionPiece() != null){
+                myBoard.addPiece(move.getEndPosition(),new ChessPiece(myPiece.getTeamColor(),move.getPromotionPiece()));
+            }else{
+                myBoard.addPiece(move.getEndPosition(),myPiece);
+            }
+
+            myBoard.addPiece(move.getStartPosition(),null);
+
+            TeamColor otherTeam = (this.getTeamTurn() == TeamColor.WHITE)? TeamColor.BLACK : TeamColor.WHITE;
+            this.setTeamTurn(otherTeam);
+        }else{
+            throw new InvalidMoveException("that was dumb");
+        }
     }
 
     /**
