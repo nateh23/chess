@@ -80,4 +80,17 @@ public class NatesTests {
         System.out.println("YER");
         presentBoard(TestUtilities.defaultBoard());
     }
+
+    @Test
+    @DisplayName("the chess game.... is gaming")
+    public void gameStruc(){
+        ChessGame newGame = new ChessGame();
+        ChessBoard newBoard = new ChessBoard();
+        newBoard.resetBoard();
+        newGame.setBoard(newBoard);
+
+        newGame.matchBoard();
+        
+        presentBoard(newGame.giveDummyBoard());
+    }
 }

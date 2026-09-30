@@ -13,6 +13,29 @@ public class ChessGame {
     ChessBoard dummyBoard;
     TeamColor currentTeamTurn;
 
+    /**
+     * nates functions to make this not suck
+     * im kinda curious if we can use the same pieces here, since pieces don't really care what pos or board they are on
+     * like they could point to the same one.
+     * also if this.... does nulls? it should
+     */
+    public ChessBoard giveDummyBoard(){
+        return this.dummyBoard;
+    }
+
+    public void matchBoard(){
+        if (this.myBoard == null){
+            throw new RuntimeException("your board doesnt exist lb");
+        }
+
+        for (int row = 1; row <= 8; row++){
+            for (int column = 1; column <= 8; column++){
+                ChessPosition calcPos = new ChessPosition(row,column);
+                this.dummyBoard.addPiece(calcPos, this.myBoard.getPiece(calcPos));
+            }
+        }
+    }
+
     public ChessGame() {
         this.dummyBoard = new ChessBoard();
     }
