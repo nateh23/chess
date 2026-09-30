@@ -109,8 +109,8 @@ public class ChessGame {
             for (int column = 1; column <= 8; column++){
                 ChessPosition calcPos = new ChessPosition(row,column);
                 ChessPiece iterPiece = this.myBoard.getPiece(calcPos);
-                if (iterPiece != null && iterPiece.getPieceType() == ChessPiece.PieceType.KING && iterPiece.getTeamColor() == color){
-                    return calcPos;
+                if (iterPiece != null && iterPiece.getTeamColor() == color){
+                    options.addAll(validMoves(calcPos));
                 }
             }
         }
@@ -208,7 +208,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-
+        return (this.isInCheck(teamColor) && this.getAllValidMoves(teamColor).isEmpty());
     }
 
     /**
@@ -219,7 +219,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return (!this.isInCheck(teamColor) && this.getAllValidMoves(teamColor).isEmpty());
     }
 
     /**
