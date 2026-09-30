@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * A class that can manage a chess game, making moves on a board
@@ -34,6 +35,30 @@ public class ChessGame {
                 this.dummyBoard.addPiece(calcPos, this.myBoard.getPiece(calcPos));
             }
         }
+    }
+
+    /**
+     * using dummy board
+     * target spots are where an enemy piece could land
+     */
+
+    public HashSet<ChessPosition> findTargetSpots(TeamColor color){
+        HashSet<ChessPosition> optionsAvailable = new HashSet<>();
+
+        for (int row = 1; row <= 8; row++){
+            for (int column = 1; column <= 8; column++){
+                ChessPosition calcPos = new ChessPosition(row,column);
+                ChessPiece pieceFound = this.dummyBoard.getPiece(calcPos);
+                if (pieceFound != null && pieceFound.getTeamColor() == color){
+                    Collection<ChessMove> pieceMoves = pieceFound.pieceMoves(this.dummyBoard,calcPos);
+                    for (ChessMove move: pieceMoves){
+                        optionsAvailable.add(move.getEndPosition());
+                    }
+                }
+            }
+        }
+
+        return optionsAvailable;
     }
 
     public ChessGame() {

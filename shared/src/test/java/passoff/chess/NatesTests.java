@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.text.Position;
 import javax.swing.text.Utilities;
 import java.util.Collection;
+import java.util.HashSet;
 
 public class NatesTests {
     @Test
@@ -88,9 +89,8 @@ public class NatesTests {
         ChessBoard newBoard = new ChessBoard();
         newBoard.resetBoard();
         newGame.setBoard(newBoard);
-
         newGame.matchBoard();
-        
-        presentBoard(newGame.giveDummyBoard());
+
+        Collection<ChessPosition> moves = newGame.findTargetSpots(ChessGame.TeamColor.WHITE);
     }
 }
