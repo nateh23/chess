@@ -20,9 +20,6 @@ public class ChessGame {
      * like they could point to the same one.
      * also if this.... does nulls? it should
      */
-    public ChessBoard giveDummyBoard(){
-        return this.dummyBoard;
-    }
 
     public void matchBoard(){
         if (this.myBoard == null){
@@ -35,6 +32,16 @@ public class ChessGame {
                 this.dummyBoard.addPiece(calcPos, this.myBoard.getPiece(calcPos));
             }
         }
+    }
+
+    public void dummyMove(ChessMove move){
+        if (this.myBoard == null){
+            throw new RuntimeException("your board doesnt exist lb");
+        }
+
+        ChessPiece myPiece = this.dummyBoard.getPiece(move.getStartPosition());
+        this.dummyBoard.addPiece(move.getEndPosition(),myPiece);
+        this.dummyBoard.addPiece(move.getStartPosition(),null);
     }
 
     /**

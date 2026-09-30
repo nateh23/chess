@@ -76,7 +76,7 @@ public class NatesTests {
         for (int i = 8; i >= 1; i--){
             System.out.println("___________________________________________________________________________");
             String boardLine = (i) + " ";
-            for (int a = 8; a >= 1; a--){
+            for (int a = 1; a <= 8; a++){
                 ChessPosition calcPos = new ChessPosition(i,a);
                 if (moves.contains(calcPos)){
                     boardLine = boardLine + "!!   |   ";
@@ -99,7 +99,7 @@ public class NatesTests {
     }
 
     @Test
-    @DisplayName("the chess game.... is gaming")
+    @DisplayName("dummyboard setup")
     public void gameStruc(){
         ChessGame newGame = new ChessGame();
         ChessBoard newBoard = new ChessBoard();
@@ -107,7 +107,17 @@ public class NatesTests {
         newGame.setBoard(newBoard);
         newGame.matchBoard();
 
+        ChessPosition startPos = new ChessPosition(2,1);
+        ChessPosition endPos = new ChessPosition(4,1);
+        ChessMove newMove = new ChessMove(startPos,endPos,null);
+
+        newGame.dummyMove(newMove);
+
         Collection<ChessPosition> moves = newGame.findTargetSpots(ChessGame.TeamColor.WHITE);
         presentMoves(moves);
+
+//        System.out.println(moves.contains(new ChessPosition(3,2)));
+
+        presentBoard(newBoard);
     }
 }
