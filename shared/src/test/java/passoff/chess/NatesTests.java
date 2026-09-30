@@ -72,6 +72,22 @@ public class NatesTests {
         }
     }
 
+    public void presentMoves(Collection<ChessPosition> moves){
+        for (int i = 8; i >= 1; i--){
+            System.out.println("___________________________________________________________________________");
+            String boardLine = (i) + " ";
+            for (int a = 8; a >= 1; a--){
+                ChessPosition calcPos = new ChessPosition(i,a);
+                if (moves.contains(calcPos)){
+                    boardLine = boardLine + "!!   |   ";
+                }else{
+                    boardLine = boardLine + "     |   ";
+                }
+            }
+            System.out.println(boardLine);
+        }
+    }
+
     @Test
     @DisplayName("eternal misery")
     public void diff(){
@@ -92,5 +108,6 @@ public class NatesTests {
         newGame.matchBoard();
 
         Collection<ChessPosition> moves = newGame.findTargetSpots(ChessGame.TeamColor.WHITE);
+        presentMoves(moves);
     }
 }
