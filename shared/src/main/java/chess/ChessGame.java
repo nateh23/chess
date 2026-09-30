@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -22,18 +23,27 @@ public class ChessGame {
      * like they could point to the same one.
      * also if this.... does nulls? it should
      */
-
-    private ChessPosition getKingPosition(TeamColor color){
+    ////////// dummy board funcs
+    private ChessPosition getKingDummyPosition(TeamColor color){
         for (int row = 1; row <= 8; row++){
             for (int column = 1; column <= 8; column++){
                 ChessPosition calcPos = new ChessPosition(row,column);
-                ChessPiece iterPiece = this.myBoard.getPiece(calcPos);
+                ChessPiece iterPiece = this.dummyBoard.getPiece(calcPos);
                 if (iterPiece != null && iterPiece.getPieceType() == ChessPiece.PieceType.KING && iterPiece.getTeamColor() == color){
                     return calcPos;
                 }
             }
         }
         return null;
+    }
+
+    public boolean isInDummyCheck(TeamColor teamColor) {
+        TeamColor otherTeam = (teamColor == TeamColor.WHITE)? TeamColor.BLACK : TeamColor.WHITE;
+
+        ChessPosition kingPosition = getKingDummyPosition(teamColor);
+        Collection<ChessPosition> enemyTargets = findTargetSpots(otherTeam);
+
+        return (enemyTargets.contains(kingPosition));
     }
 
     private void matchBoard(){
@@ -59,11 +69,6 @@ public class ChessGame {
         this.dummyBoard.addPiece(move.getStartPosition(),null);
     }
 
-    /**
-     * using dummy board
-     * target spots are where an enemy piece could land
-     */
-
     private HashSet<ChessPosition> findTargetSpots(TeamColor color){
         HashSet<ChessPosition> optionsAvailable = new HashSet<>();
 
@@ -81,6 +86,36 @@ public class ChessGame {
         }
 
         return optionsAvailable;
+    }
+//////////
+
+    private ChessPosition getKingPosition(TeamColor color){
+        for (int row = 1; row <= 8; row++){
+            for (int column = 1; column <= 8; column++){
+                ChessPosition calcPos = new ChessPosition(row,column);
+                ChessPiece iterPiece = this.myBoard.getPiece(calcPos);
+                if (iterPiece != null && iterPiece.getPieceType() == ChessPiece.PieceType.KING && iterPiece.getTeamColor() == color){
+                    return calcPos;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Collection<ChessMove> getAllValidMoves(TeamColor color){
+        Collection<ChessMove> options = new ArrayList<ChessMove>();
+
+        for (int row = 1; row <= 8; row++){
+            for (int column = 1; column <= 8; column++){
+                ChessPosition calcPos = new ChessPosition(row,column);
+                ChessPiece iterPiece = this.myBoard.getPiece(calcPos);
+                if (iterPiece != null && iterPiece.getPieceType() == ChessPiece.PieceType.KING && iterPiece.getTeamColor() == color){
+                    return calcPos;
+                }
+            }
+        }
+
+        return options;
     }
 
     public ChessGame() {
@@ -119,7 +154,24 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> options = new ArrayList<ChessMove>();
+
+        ChessPiece foundPiece = this.myBoard.getPiece(startPosition);
+        if (foundPiece == null){
+            return null;
+        }
+
+        Collection<ChessMove> unfilteredOptions = foundPiece.pieceMoves(this.myBoard,startPosition);
+
+        for (ChessMove move: unfilteredOptions){
+            matchBoard();
+            dummyMove(move);
+            if (isInDummyCheck(foundPiece.getTeamColor()) == false){
+                options.add(move);
+            }
+        }
+
+        return options;
     }
 
     /**
@@ -156,7 +208,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+
     }
 
     /**
