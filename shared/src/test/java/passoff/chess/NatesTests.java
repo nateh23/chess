@@ -105,19 +105,19 @@ public class NatesTests {
         ChessBoard newBoard = new ChessBoard();
         newBoard.resetBoard();
         newGame.setBoard(newBoard);
-        newGame.matchBoard();
-
-        ChessPosition startPos = new ChessPosition(2,1);
-        ChessPosition endPos = new ChessPosition(4,1);
-        ChessMove newMove = new ChessMove(startPos,endPos,null);
-
-        newGame.dummyMove(newMove);
-
-        Collection<ChessPosition> moves = newGame.findTargetSpots(ChessGame.TeamColor.WHITE);
-        presentMoves(moves);
-
-//        System.out.println(moves.contains(new ChessPosition(3,2)));
-
-        presentBoard(newBoard);
+//        newGame.matchBoard();
+//
+//        ChessPosition startPos = new ChessPosition(2,1);
+//        ChessPosition endPos = new ChessPosition(4,1);
+//        ChessMove newMove = new ChessMove(startPos,endPos,null);
+//
+//        newGame.dummyMove(newMove);
+//
+//        Collection<ChessPosition> moves = newGame.findTargetSpots(ChessGame.TeamColor.WHITE);
+//        presentMoves(moves);
+//
+//       System.out.println(moves.contains(new ChessPosition(3,2)));
+//
+//        presentBoard(newBoard);
     }
 }

@@ -11,6 +11,8 @@ import java.util.HashSet;
  */
 public class ChessGame {
     ChessBoard myBoard;
+//    rule for dummyBoard, anytime we touch dummyboard it should be set to match myBoard at the end and beginning to
+    // ensure it can be reused.
     ChessBoard dummyBoard;
     TeamColor currentTeamTurn;
 
@@ -21,7 +23,21 @@ public class ChessGame {
      * also if this.... does nulls? it should
      */
 
-    public void matchBoard(){
+    private ChessPosition getKingPosition(TeamColor color){
+        for (int row = 1; row <= 8; row++){
+            for (int column = 1; column <= 8; column++){
+                ChessPosition calcPos = new ChessPosition(row,column);
+                ChessPiece iterPiece = this.myBoard.getPiece(calcPos);
+
+                if (iterPiece.getPieceType() == ChessPiece.PieceType.KING && iterPiece.getTeamColor() == color){
+                    return calcPos;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void matchBoard(){
         if (this.myBoard == null){
             throw new RuntimeException("your board doesnt exist lb");
         }
@@ -34,7 +50,7 @@ public class ChessGame {
         }
     }
 
-    public void dummyMove(ChessMove move){
+    private void dummyMove(ChessMove move){
         if (this.myBoard == null){
             throw new RuntimeException("your board doesnt exist lb");
         }
