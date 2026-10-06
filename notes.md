@@ -55,3 +55,169 @@ https://sequencediagram.org/index.html?presentationMode=readOnly#initialData=IYY
 
 
 my sequence I made for phase 2
+
+actor Client
+participant Server
+participant Handler
+participant Service
+participant DataAccess
+database db
+
+entryspacing 0.9
+participant ChangeMe1
+participant ChangeMe2
+participant ChangeMe3
+participant ChangeMe4
+participant ChangeMe5
+participant ChangeMe6
+participant ChangeMe7
+group#43829c #lightblue Registration
+Client -> Server: [POST] /user\n{"username":" ", "password":" ", "email":" "}
+Server -> Handler: {"username":" ", "password":" ", "email":" "}
+Handler -> Service: register(RegisterRequest)
+Service -> DataAccess: getUser(username)
+DataAccess -> db:Find UserData by username
+break User with username already exists
+DataAccess --> Service: UserData
+Service --> Server: AlreadyTakenException
+Server --> Client: 403\n{"message": "Error: username already taken"}
+end
+DataAccess --> Service: null
+Service -> DataAccess:createUser(userData)
+DataAccess -> db:Add UserData
+Service -> DataAccess:createAuth(authData)
+DataAccess -> db:Add AuthData
+Service --> Handler: RegisterResult
+Handler --> Server: {"username" : " ", "authToken" : " "}
+Server --> Client: 200\n{"username" : " ", "authToken" : " "}
+end
+
+group#orange #FCEDCA Login
+Client -> Server: [POST] /session\n{"username":" ", "password":" "}
+Server -> Handler: {"username": " ", "password": " "}
+Handler -> Service: login(LoginRequest)
+Service ->DataAccess: getUser(username)
+DataAccess -> db:Find UserData by username
+break User with username is null
+DataAccess --> Service: null
+Service --> Server: DataAccessException
+Server --> Client: 401\n{"message": "Error: unauthorized."}
+end
+DataAccess --> Service: UserData
+break password from request does not match password in UserData
+Service --> Server: InvalidPasswordException
+Server --> Client: 401\n{"message": "Error: unauthorized."}
+end
+Service -> DataAccess:createAuth(authData)
+DataAccess -> db:Add AuthData
+Service --> Handler: LoginResult
+Handler --> Server: {"username" : " ", "authToken" : " "}
+Server --> Client: 200\n{"username" : " ", "authToken" : " "}
+end
+
+group#green #lightgreen Logout
+Client -> Server: [DELETE] /session\nauthorization: <authToken>
+Server -> Handler: authorization: <authToken>
+Handler -> Service: logout(LogoutRequest)
+Service ->DataAccess: getAuth(authToken)
+DataAccess -> db: Find AuthData by authToken
+break AuthData with authToken does not exist
+DataAccess --> Service: null
+Service--> Server:InvalidAuthTokenException
+Server --> Client: 401\n{"message": "Error: unauthorized."}
+end
+DataAccess-->Service: AuthData
+Service -> DataAccess:deleteAuth(authData)
+DataAccess->db: Delete AuthData
+Service-->Handler: void
+Handler-->Server: {}
+Server-->Client: 200\n{}
+end
+
+group#red #pink List Games
+Client -> Server: [GET] /game\nauthorization: <authToken>
+Server -> Handler: authorization: <authToken>
+Handler -> Service: listGames(ListGamesRequest)
+Service ->DataAccess: getAuth(authToken)
+DataAccess -> db: Find AuthData by authToken
+break AuthData with authToken does not exist
+DataAccess --> Service: null
+Service--> Server:InvalidAuthTokenException
+Server --> Client: 401\n{"message": "Error: unauthorized."}
+end
+DataAccess-->Service: AuthData
+Service->DataAccess: getAllGames()
+DataAccess->db: Get All GameData
+Service-->Handler: GamesListResult
+Handler-->Server: { "games": [{"gameID": 1234, "whiteUsername":"", "blackUsername":"", "gameName": ""} ]}
+Server-->Client: 200\n{ "games": [{"gameID": 1234, "whiteUsername":"", "blackUsername":"", "gameName": ""} ]}
+end
+
+group#d790e0 #E3CCE6 Create Game 
+Client -> Server: [POST] /game\nauthorization: <authToken>\n{ "gameName" : " "}
+Server->Handler: authorization: <authToken>\n{ "gameName" : " "}
+Handler->Service: createGame(CreateGamesRequest)
+Service ->DataAccess: getAuth(authToken)
+DataAccess -> db: Find AuthData by authToken
+break AuthData with authToken does not exist
+DataAccess --> Service: null
+Service--> Server:InvalidAuthTokenException
+Server --> Client: 401\n{"message": "Error: unauthorized."}
+end
+DataAccess-->Service: AuthData
+Service->DataAccess:getGame(gameName)
+DataAccess->db:Find GameData by gameName
+DataAccess-->Service: null
+Service->DataAccess: createGame(gameData)
+DataAccess->db: Add GameData
+Service-->Handler: CreateGameResult
+Handler-->Server: { "gameID": 1234 }
+Server-->Client: 200\n{ "gameID": 1234 }
+end
+
+group#yellow #lightyellow Join Game #black
+Client -> Server: [PUT] /game\nauthorization: <authToken>\n{ "playerColor":"WHITE/BLACK", "gameID": 1234 }
+Server -> Handler: authorization: <authToken>\n{ "playerColor":"WHITE/BLACK", "gameID": 1234 }
+Handler ->Service: joinGame(JoinGameRequest)
+Service ->DataAccess: getAuth(authToken)
+DataAccess -> db: Find AuthData by authToken
+
+break AuthData with authToken does not exist
+DataAccess --> Service: null
+Service--> Server:InvalidAuthTokenException
+Server --> Client: 401\n{"message": "Error: unauthorized."}
+end
+DataAccess-->Service: AuthData
+Service ->DataAccess: getGame(gameID)
+DataAccess -> db: Find GameData by gameID
+break GameData with gameID does not exist
+DataAccess --> Service: null
+Service--> Server:DataAccessException
+Server --> Client: 400\n{"message": "Error: Bad request."}
+end
+DataAccess-->Service: GameData
+
+break teamColorPosition in GameData is already taken
+Service--> Server:AlreadyTakenException
+Server --> Client: 403\n{"message": "Error: already taken."}
+end
+Service->DataAccess: updateGame(gameID)
+DataAccess->db: Add new user to proper team
+Service-->Handler: void
+Handler-->Server: {}
+Server-->Client:200\n{}
+
+end
+
+group#gray #lightgray Clear application 
+Client -> Server: [DELETE] /db
+Server->Handler: {}
+Handler->Service: clearData
+Service->DataAccess: clearAllData()
+DataAccess->db: Delete all Data
+Service-->Handler: void
+Handler-->Server: {}
+Server-->Client: 200\n{}
+end
+
+the sequence itself cus im scared to lose it lol
