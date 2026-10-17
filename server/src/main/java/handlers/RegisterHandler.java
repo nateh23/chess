@@ -2,7 +2,10 @@ package handlers;
 
 import com.google.gson.Gson;
 
+import dataaccess.AlreadyTakenException;
+import dataaccess.DataAccessException;
 import io.javalin.http.Context;
+import model.RegisterResult;
 import service.UserService;
 
 import model.RegisterRequest;
@@ -14,8 +17,15 @@ public class RegisterHandler extends Handler {
         this.service = service;
     }
 
-    public void register(Context ctx){
+    public void register(Context ctx) throws DataAccessException {
         RegisterRequest request = new Gson().fromJson(ctx.body(),RegisterRequest.class);
-        this.service.register(request);
+
+        try {
+            RegisterResult result = this.service.register(request);
+            ctx.status(200);
+            ctx.result(new Gson().toJson(result));
+        }catch (AlreadyTakenException e){
+            ctx.result(new Gson().toJson(("")));
+        }
     }
 }
