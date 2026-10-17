@@ -10,6 +10,8 @@ import service.UserService;
 
 import model.RegisterRequest;
 
+import java.util.Map;
+
 public class RegisterHandler extends Handler {
     UserService service;
 
@@ -25,7 +27,8 @@ public class RegisterHandler extends Handler {
             ctx.status(200);
             ctx.result(new Gson().toJson(result));
         }catch (AlreadyTakenException e){
-            ctx.result(new Gson().toJson(("")));
+            ctx.status(403);
+            ctx.result(new Gson().toJson((Map.of("message","Error: bad request"))));
         }
     }
 }
