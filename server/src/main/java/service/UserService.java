@@ -24,6 +24,8 @@ public class UserService{
             throw new AlreadyTakenException("Username already taken!");
         }
 
+        dataAccess.createUser(new UserData(request.username(),request.password(),request.email()));
+
         AuthData newAuth = new AuthData(UUID.randomUUID().toString(), request.username());
         dataAccess.createAuth(newAuth);
 

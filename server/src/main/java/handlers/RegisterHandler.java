@@ -28,7 +28,7 @@ public class RegisterHandler extends Handler {
             ctx.result(new Gson().toJson(result));
         }catch (AlreadyTakenException e){
             ctx.status(403);
-            ctx.result(new Gson().toJson((Map.of("message","Error: bad request"))));
+            ctx.result(new Gson().toJson((Map.of("message","Error: already taken"))));
         }
     }
 }
