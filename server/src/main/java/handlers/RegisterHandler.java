@@ -22,13 +22,8 @@ public class RegisterHandler extends Handler {
     public void register(Context ctx) throws DataAccessException {
         RegisterRequest request = new Gson().fromJson(ctx.body(),RegisterRequest.class);
 
-        try {
-            RegisterResult result = this.service.register(request);
-            ctx.status(200);
-            ctx.result(new Gson().toJson(result));
-        }catch (AlreadyTakenException e){
-            ctx.status(403);
-            ctx.result(new Gson().toJson((Map.of("message","Error: already taken"))));
-        }
+        RegisterResult result = this.service.register(request);
+        ctx.status(200);
+        ctx.result(new Gson().toJson(result));
     }
 }
