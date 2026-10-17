@@ -1,5 +1,6 @@
 package server;
 
+import dataaccess.MemoryDataAccess;
 import io.javalin.*;
 import handlers.RegisterHandler;
 import service.UserService;
@@ -9,8 +10,10 @@ public class Server {
 
 
     public Server() {
+        //db
+        final MemoryDataAccess dataAccess = new MemoryDataAccess();
         //services
-        final UserService userService = new UserService();
+        final UserService userService = new UserService(dataAccess);
         //handlers
         final RegisterHandler registerHandler = new RegisterHandler(userService);
 
