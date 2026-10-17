@@ -1,5 +1,9 @@
 package service;
 
-public class UserService {
+import model.RegisterRequest;
 
+public class UserService {
+    public void register(RegisterRequest request){
+
+    };
 }
