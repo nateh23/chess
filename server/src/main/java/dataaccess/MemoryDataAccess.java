@@ -16,4 +16,8 @@ public class MemoryDataAccess implements DataAccess{
     public void createAuth(AuthData authData){
         this.authTokens.put(authData.authToken(),authData.username());
     }
+
+    public void createUser(UserData userData){
+        users.put(userData.username(),userData);
+    }
 }
