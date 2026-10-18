@@ -1,11 +1,9 @@
 package service;
 
-import dataaccess.AlreadyTakenException;
-import dataaccess.DataAccess;
-import dataaccess.DataAccessException;
-import dataaccess.InvalidPasswordException;
+import dataaccess.*;
 import model.*;
 
+import javax.xml.crypto.Data;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -47,4 +45,14 @@ public class UserService{
 
         return new LoginResult(newAuth.username(),newAuth.authToken());
     };
+
+    public void logout(LogoutRequest request) throws DataAccessException{
+        String username = dataAccess.getAuth(request.authToken());
+
+        if(username == null){
+            throw new InvalidAuthToken("Auth token does not exist");
+        }
+
+        dataAccess.deleteAuth(request.authToken());
+    }
 }

@@ -20,4 +20,12 @@ public class MemoryDataAccess implements DataAccess{
     public void createUser(UserData userData){
         users.put(userData.username(),userData);
     }
+
+    public String getAuth(String authToken){
+        return this.authTokens.get(authToken);
+    }
+
+    public void deleteAuth(String authToken){
+        this.authTokens.remove(authToken);
+    }
 }

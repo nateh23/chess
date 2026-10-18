@@ -11,4 +11,8 @@ public interface DataAccess {
     void createAuth(AuthData authData) throws DataAccessException;
 
     void createUser(UserData userData) throws DataAccessException;
+
+    String getAuth(String authToken) throws DataAccessException;
+
+    void deleteAuth(String authToken) throws DataAccessException;
 }
