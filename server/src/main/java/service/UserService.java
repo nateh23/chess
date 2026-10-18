@@ -36,7 +36,10 @@ public class UserService{
             throw new DataAccessException("User does not exist");
         }
 
-        if (Objects.equals(user.password(), request.password())){
+        if (user.password() == request.password()){
+            System.out.println(user.password());
+            System.out.println(request.password());
+            System.out.println("bad password");
             throw new InvalidPasswordException("Password does not match!");
         }
 
