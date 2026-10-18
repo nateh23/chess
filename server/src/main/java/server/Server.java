@@ -2,10 +2,12 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
+import handlers.ClearHandler;
 import handlers.LoginHandler;
 import handlers.LogoutHandler;
 import io.javalin.*;
 import handlers.RegisterHandler;
+import service.ApplicationService;
 import service.UserService;
 
 import java.util.Map;
@@ -19,7 +21,10 @@ public class Server {
         final MemoryDataAccess dataAccess = new MemoryDataAccess();
         //services
         final UserService userService = new UserService(dataAccess);
+        final ApplicationService applicationService = new ApplicationService(dataAccess);
         //handlers
+        final ClearHandler clearHandler = new ClearHandler(applicationService);
+
         final RegisterHandler registerHandler = new RegisterHandler(userService);
         final LoginHandler loginHandler = new LoginHandler(userService);
         final LogoutHandler logoutHandler = new LogoutHandler(userService);
@@ -30,6 +35,7 @@ public class Server {
         javalin.post("/user",registerHandler::register);
         javalin.post("/session",loginHandler::login);
         javalin.delete("/session",logoutHandler::logout);
+        javalin.delete("/db",clearHandler::clear);
 
         //exceptions
         javalin.exception(AlreadyTakenException.class, (e, ctx) -> {

@@ -3,8 +3,6 @@ package service;
 import dataaccess.*;
 import model.*;
 
-import javax.xml.crypto.Data;
-import java.util.Objects;
 import java.util.UUID;
 
 public class UserService{

@@ -28,4 +28,9 @@ public class MemoryDataAccess implements DataAccess{
     public void deleteAuth(String authToken){
         this.authTokens.remove(authToken);
     }
+
+    public void clearAllData(){
+        this.users.clear();
+        this.authTokens.clear();
+    }
 }
