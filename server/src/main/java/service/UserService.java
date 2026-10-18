@@ -3,11 +3,10 @@ package service;
 import dataaccess.AlreadyTakenException;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import model.AuthData;
-import model.RegisterRequest;
-import model.RegisterResult;
-import model.UserData;
+import dataaccess.InvalidPasswordException;
+import model.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserService{
@@ -30,5 +29,22 @@ public class UserService{
         dataAccess.createAuth(newAuth);
 
         return new RegisterResult(newAuth.username(),newAuth.authToken());
+    };
+
+    public LoginResult login(LoginRequest request) throws DataAccessException {
+        UserData user = dataAccess.getUser(request.username());
+
+        if (user == null){
+            throw new DataAccessException("User does not exist");
+        }
+
+        if (Objects.equals(user.password(), request.password())){
+            throw new InvalidPasswordException("Password does not match!");
+        }
+
+        AuthData newAuth = new AuthData(UUID.randomUUID().toString(), request.username());
+        dataAccess.createAuth(newAuth);
+
+        return new LoginResult(newAuth.username(),newAuth.authToken());
     };
 }
