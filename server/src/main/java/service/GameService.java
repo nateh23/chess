@@ -65,9 +65,21 @@ public class GameService extends Service{
 
         if (
                 (request.playerColor().equals("WHITE") && foundGame.whiteUsername() != null) ||
-                (request.playerColor().equals("BLACK") && foundGame.whiteUsername() != null)
+                (request.playerColor().equals("BLACK") && foundGame.blackUsername() != null)
         ){
             throw new InvalidTeamException("Team already taken");
         }
+
+        String username = dataAccess.getAuth(request.authToken());
+
+        GameData updatedGame;
+
+        if (request.playerColor().equals("BLACK")){
+            updatedGame = new GameData(foundGame.gameId(),foundGame.whiteUsername(),username,foundGame.gameName(),foundGame.game());
+        }else{
+            updatedGame = new GameData(foundGame.gameId(),username,foundGame.blackUsername(),foundGame.gameName(),foundGame.game());
+        }
+
+        dataAccess.updateGame(updatedGame.gameId(),updatedGame);
     }
 }

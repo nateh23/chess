@@ -20,7 +20,7 @@ public class CreateGameHandler extends Handler{
 
         CreateGameRequest request = new CreateGameRequest(
                 header,
-                bodyRequest == null ? null : bodyRequest.gameName());
+                bodyRequest.gameName() == null ? null : bodyRequest.gameName());
 
         CreateGameResult result = this.service.createGame(request);
 

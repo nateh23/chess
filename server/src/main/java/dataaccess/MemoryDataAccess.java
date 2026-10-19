@@ -54,4 +54,8 @@ public class MemoryDataAccess implements DataAccess{
     public GameData getGameDataByID(int gameId){
         return this.games.get(gameId);
     }
+
+    public void updateGame(int gameId, GameData gameData) throws DataAccessException {
+        this.games.put(gameId,gameData);
+    }
 }
