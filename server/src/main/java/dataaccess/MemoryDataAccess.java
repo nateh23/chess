@@ -1,13 +1,17 @@
 package dataaccess;
 
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class MemoryDataAccess implements DataAccess{
     final private HashMap<String, UserData> users = new HashMap<>();
     final private HashMap<String, String> authTokens = new HashMap<>();
+    final private HashMap<Integer, GameData> games = new HashMap<>();
 
     public UserData getUser(String username){
         return this.users.get(username);
@@ -32,5 +36,9 @@ public class MemoryDataAccess implements DataAccess{
     public void clearAllData(){
         this.users.clear();
         this.authTokens.clear();
+    }
+
+    public Collection<GameData> listGames(){
+        return new ArrayList<>(this.games.values());
     }
 }
