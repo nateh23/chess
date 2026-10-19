@@ -45,4 +45,12 @@ public class MemoryDataAccess implements DataAccess{
     public void addGameData(GameData gameData){
         this.games.put(gameData.gameId(),gameData);
     }
+
+    public int getGamesCount(){
+        return this.games.size();
+    }
+
+    public GameData getGameDataByID(int gameId){
+        return this.games.get(gameId);
+    }
 }

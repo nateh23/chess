@@ -21,4 +21,10 @@ public interface DataAccess {
     void clearAllData() throws DataAccessException;
 
     Collection<GameData> listGames() throws DataAccessException;
+
+    public void addGameData() throws DataAccessException;
+
+    public int getGamesCount() throws DataAccessException;
+
+    public GameData getGameDataByID() throws DataAccessException;
 }
