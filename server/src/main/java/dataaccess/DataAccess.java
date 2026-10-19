@@ -22,9 +22,9 @@ public interface DataAccess {
 
     Collection<GameData> listGames() throws DataAccessException;
 
-    public void addGameData() throws DataAccessException;
+    public void addGameData(GameData gameData) throws DataAccessException;
 
     public int getGamesCount() throws DataAccessException;
 
-    public GameData getGameDataByID() throws DataAccessException;
+    public GameData getGameDataByID(int gameId) throws DataAccessException;
 }

@@ -1,11 +1,9 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import model.CreateGameRequest;
-import model.GameData;
-import model.ListGamesResult;
-import model.ListGamesRequest;
+import model.*;
 
 import java.util.UUID;
 
@@ -24,16 +22,28 @@ public class GameService extends Service{
         return new ListGamesResult(this.dataAccess.listGames());
     }
 
-    public CreateGameRequest createGame(CreateGameRequest request) throws DataAccessException{
+    public CreateGameResult createGame(CreateGameRequest request) throws DataAccessException{
         validateNotNull(request);
         validateAuthToken(request.authToken());
 
-        int gameIdCounter = 0;
+        int gameId = 0;
 
         if (dataAccess.getGamesCount() >= Integer.MAX_VALUE - 1){
             throw new DataAccessException("No free ID's");
         }
 
-        GameData gameData = new GameData(,"","", request.gameName());
+        for (int i = 0; i <= Integer.MAX_VALUE - 1; i++){
+            GameData foundGame = dataAccess.getGameDataByID(i);
+
+            if (foundGame == null){
+                gameId = i;
+                break;
+            }
+        }
+
+        GameData gameData = new GameData(gameId,"","", request.gameName(), new ChessGame());
+        dataAccess.addGameData(gameData);
+
+        return new CreateGameResult(gameData.gameId());
     }
 }
