@@ -15,9 +15,7 @@ public class UserService extends Service{
     }
 
     public RegisterResult register(RegisterRequest request) throws AlreadyTakenException, DataAccessException {
-        if (request.hasNull()){
-            throw new DataAccessException("Invalid request");
-        }
+        validateNotNull(request);
 
         UserData user = dataAccess.getUser(request.username());
 
@@ -34,9 +32,7 @@ public class UserService extends Service{
     };
 
     public LoginResult login(LoginRequest request) throws DataAccessException {
-        if (request.hasNull()){
-            throw new DataAccessException("Invalid request");
-        }
+        validateNotNull(request);
 
         UserData user = dataAccess.getUser(request.username());
 
@@ -55,10 +51,7 @@ public class UserService extends Service{
     };
 
     public void logout(LogoutRequest request) throws DataAccessException{
-        if (request.hasNull()){
-            throw new DataAccessException("Invalid request");
-        }
-
+        validateNotNull(request);
         validateAuthToken(request.authToken());
 
         dataAccess.deleteAuth(request.authToken());
