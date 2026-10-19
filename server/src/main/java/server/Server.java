@@ -29,6 +29,7 @@ public class Server {
         final LogoutHandler logoutHandler = new LogoutHandler(userService);
 
         final ListGamesHandler listGamesHandler = new ListGamesHandler(gameService);
+        final CreateGameHandler createGameHandler = new CreateGameHandler(gameService);
 
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
@@ -38,6 +39,7 @@ public class Server {
         javalin.delete("/session",logoutHandler::logout);
         javalin.delete("/db",clearHandler::clear);
         javalin.get("/game",listGamesHandler::listGames);
+        javalin.post("/game",createGameHandler::createGame);
 
         //exceptions
         javalin.exception(AlreadyTakenException.class, (e, ctx) -> {

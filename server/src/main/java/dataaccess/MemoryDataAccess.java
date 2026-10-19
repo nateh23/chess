@@ -36,6 +36,7 @@ public class MemoryDataAccess implements DataAccess{
     public void clearAllData(){
         this.users.clear();
         this.authTokens.clear();
+        this.games.clear();
     }
 
     public Collection<GameData> listGames(){

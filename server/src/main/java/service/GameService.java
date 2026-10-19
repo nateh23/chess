@@ -26,13 +26,13 @@ public class GameService extends Service{
         validateNotNull(request);
         validateAuthToken(request.authToken());
 
-        int gameId = 0;
+        int gameId = 1;
 
         if (dataAccess.getGamesCount() >= Integer.MAX_VALUE - 1){
             throw new DataAccessException("No free ID's");
         }
 
-        for (int i = 0; i <= Integer.MAX_VALUE - 1; i++){
+        for (int i = 1; i <= Integer.MAX_VALUE - 1; i++){
             GameData foundGame = dataAccess.getGameDataByID(i);
 
             if (foundGame == null){
