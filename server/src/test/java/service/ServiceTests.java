@@ -76,8 +76,8 @@ public class ServiceTests {
         RegisterRequest registerThree = new RegisterRequest("three","three","three");
 
         RegisterResult userResultOne = userService.register(registerOne);
-        RegisterResult userResultThree = userService.register(registerTwo);
-        RegisterResult userResultFour = userService.register(registerThree);
+        RegisterResult userResultTwo = userService.register(registerTwo);
+        RegisterResult userResultThree = userService.register(registerThree);
 
         String badAuth = "imanevilauthandIhateeveryone";
 
@@ -104,6 +104,36 @@ public class ServiceTests {
 
         CreateGameRequest goodRequest = new CreateGameRequest(userResultOne.authToken(),"pain");
 
-        CreateGameResult goodResult = gameService.createGame(goodRequest);
+        CreateGameResult gameOne = gameService.createGame(goodRequest);
+
+        JoinGameRequest goodRequestOne = new JoinGameRequest(userResultOne.authToken(),"WHITE",1);
+        JoinGameRequest goodRequestTwo = new JoinGameRequest(userResultTwo.authToken(),"WHITE",1);
+        JoinGameRequest goodRequestThree = new JoinGameRequest(userResultTwo.authToken(),"BLACK",1);
+        JoinGameRequest goodRequestFour = new JoinGameRequest(userResultThree.authToken(),"BLACK",1);
+
+        JoinGameRequest nullRequestOne = new JoinGameRequest(null,"BLACK",1);
+        JoinGameRequest nullRequestTwo = new JoinGameRequest("pride",null,1);
+        JoinGameRequest nullRequestThree = new JoinGameRequest("pride","greed",0);
+
+        JoinGameRequest evilAuthRequest = new JoinGameRequest(badAuth,"WHITE",1);
+        JoinGameRequest fakeTeamRequest = new JoinGameRequest(userResultOne.authToken(),"GREEN",1);
+        JoinGameRequest fakeGameIDRequest = new JoinGameRequest(userResultOne.authToken(),"WHITE",2);
+
+        Assertions.assertAll(
+                () -> Assertions.assertThrows(DataAccessException.class, () -> gameService.joinGame(nullRequestOne)),
+                () -> Assertions.assertThrows(DataAccessException.class, () -> gameService.joinGame(nullRequestTwo)),
+                () -> Assertions.assertThrows(DataAccessException.class, () -> gameService.joinGame(nullRequestThree)),
+                () -> Assertions.assertThrows(InvalidAuthToken.class, () -> gameService.joinGame(evilAuthRequest)),
+                () -> Assertions.assertThrows(DataAccessException.class, () -> gameService.joinGame(fakeTeamRequest)),
+                () -> Assertions.assertThrows(DataAccessException.class, () -> gameService.joinGame(fakeGameIDRequest))
+        );
+
+        gameService.joinGame(goodRequestOne);
+
+        Assertions.assertThrows(InvalidTeamException.class, () -> gameService.joinGame(goodRequestTwo));
+
+        gameService.joinGame(goodRequestThree);
+
+        Assertions.assertThrows(InvalidTeamException.class, () -> gameService.joinGame(goodRequestFour));
     }
 }
