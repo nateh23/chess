@@ -3,8 +3,10 @@ package service;
 import chess.ChessGame;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
+import dataaccess.InvalidTeamException;
 import model.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class GameService extends Service{
@@ -41,9 +43,31 @@ public class GameService extends Service{
             }
         }
 
-        GameData gameData = new GameData(gameId,"","", request.gameName(), new ChessGame());
+        GameData gameData = new GameData(gameId,null,null, request.gameName(), new ChessGame());
         dataAccess.addGameData(gameData);
 
         return new CreateGameResult(gameData.gameId());
+    }
+
+    public void joinGame(JoinGameRequest request) throws DataAccessException{
+        validateNotNull(request);
+        validateAuthToken(request.authToken());
+
+        GameData foundGame = dataAccess.getGameDataByID(request.gameID());
+
+        if (foundGame == null){
+            throw new DataAccessException("Invalid gameID");
+        }
+
+        if (!Objects.equals(request.playerColor(), "BLACK") && !Objects.equals(request.playerColor(), "WHITE")){
+            throw new DataAccessException("Invalid Team");
+        }
+
+        if (
+                (request.playerColor().equals("WHITE") && foundGame.whiteUsername() != null) ||
+                (request.playerColor().equals("BLACK") && foundGame.whiteUsername() != null)
+        ){
+            throw new InvalidTeamException("Team already taken");
+        }
     }
 }

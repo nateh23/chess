@@ -57,6 +57,10 @@ public class Server {
         javalin.exception(InvalidAuthToken.class, (e, ctx) -> {
             ctx.status(401).result(new Gson().toJson((Map.of("message","Error: unauthorized"))));
         });
+
+        javalin.exception(InvalidTeamException.class, (e, ctx) -> {
+            ctx.status(403).result(new Gson().toJson((Map.of("message","Error: already taken"))));
+        });
     }
 
     public int run(int desiredPort) {
