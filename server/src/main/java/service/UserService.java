@@ -6,10 +6,11 @@ import model.*;
 import java.util.Objects;
 import java.util.UUID;
 
-public class UserService{
+public class UserService extends Service{
     DataAccess dataAccess;
 
     public UserService(DataAccess dataAccess){
+        super(dataAccess);
         this.dataAccess = dataAccess;
     }
 
@@ -58,11 +59,7 @@ public class UserService{
             throw new DataAccessException("Invalid request");
         }
 
-        String username = dataAccess.getAuth(request.authToken());
-
-        if(username == null){
-            throw new InvalidAuthToken("Auth token does not exist");
-        }
+        validateAuthToken(request.authToken());
 
         dataAccess.deleteAuth(request.authToken());
     }
