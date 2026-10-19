@@ -41,4 +41,8 @@ public class MemoryDataAccess implements DataAccess{
     public Collection<GameData> listGames(){
         return new ArrayList<>(this.games.values());
     }
+
+    public void addGameData(GameData gameData){
+        this.games.put(gameData.gameId(),gameData);
+    }
 }
