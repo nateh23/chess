@@ -67,12 +67,12 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     //util that will be resued by other pieces
-    private class calcUtility{
+    private class CalcUtility {
         ChessBoard myBoard;
         ChessPosition myPosition;
         ChessPiece myPiece;
 
-        public calcUtility(ChessBoard board, ChessPosition position, ChessPiece piece){
+        public CalcUtility(ChessBoard board, ChessPosition position, ChessPiece piece){
             this.myBoard = board;
             this.myPosition = position;
             this.myPiece = piece;
@@ -171,7 +171,7 @@ public class ChessPiece {
     //brains
     private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> options = new ArrayList<>();
-        calcUtility myUtil = new calcUtility(board,myPosition,this);
+        CalcUtility myUtil = new CalcUtility(board,myPosition,this);
 
         options.addAll(myUtil.slide(1,0));
         options.addAll(myUtil.slide(-1,0));
@@ -183,7 +183,7 @@ public class ChessPiece {
 
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> options = new ArrayList<>();
-        calcUtility myUtil = new calcUtility(board,myPosition,this);
+        CalcUtility myUtil = new CalcUtility(board,myPosition,this);
 
         options.addAll(myUtil.slide(1,1));
         options.addAll(myUtil.slide(-1,1));
@@ -195,7 +195,7 @@ public class ChessPiece {
 
     private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> options = new ArrayList<>();
-        calcUtility myUtil = new calcUtility(board,myPosition,this);
+        CalcUtility myUtil = new CalcUtility(board,myPosition,this);
 
         options.addAll(myUtil.slide(1,0));
         options.addAll(myUtil.slide(-1,0));
@@ -211,7 +211,7 @@ public class ChessPiece {
 
     private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> options = new ArrayList<>();
-        calcUtility myUtil = new calcUtility(board,myPosition,this);
+        CalcUtility myUtil = new CalcUtility(board,myPosition,this);
 
         options.addAll(myUtil.step(1,0));
         options.addAll(myUtil.step(-1,0));
@@ -227,7 +227,7 @@ public class ChessPiece {
 
     private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> options = new ArrayList<>();
-        calcUtility myUtil = new calcUtility(board,myPosition,this);
+        CalcUtility myUtil = new CalcUtility(board,myPosition,this);
 
         options.addAll(myUtil.step(2,-1));
         options.addAll(myUtil.step(1,-2));
@@ -243,7 +243,7 @@ public class ChessPiece {
 
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> options = new ArrayList<>();
-        calcUtility myUtil = new calcUtility(board,myPosition,this);
+        CalcUtility myUtil = new CalcUtility(board,myPosition,this);
 
         int directionMultiplier = (this.myColor == ChessGame.TeamColor.WHITE) ? 1 : -1;
 

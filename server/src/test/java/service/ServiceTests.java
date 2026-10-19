@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ServiceTests {
     @Test
     @DisplayName("ApplicationServiceTests")
-    public void ApplicationTest() throws DataAccessException {
+    public void applicationTest() throws DataAccessException {
         DataAccess dataAccess = new MemoryDataAccess();
         ApplicationService applicationService = new ApplicationService(dataAccess);
 
@@ -18,7 +18,7 @@ public class ServiceTests {
 
     @Test
     @DisplayName("ApplicationServiceTests")
-    public void UserTest() throws DataAccessException {
+    public void userTest() throws DataAccessException {
         DataAccess dataAccess = new MemoryDataAccess();
         UserService userService = new UserService(dataAccess);
 
@@ -66,7 +66,7 @@ public class ServiceTests {
 
     @Test
     @DisplayName("GameServiceTests")
-    public void GameServiceTests() throws DataAccessException {
+    public void gameServiceTest() throws DataAccessException {
         DataAccess dataAccess = new MemoryDataAccess();
         GameService gameService = new GameService(dataAccess);
         UserService userService = new UserService(dataAccess);
