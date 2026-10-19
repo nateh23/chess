@@ -2,12 +2,10 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
-import handlers.ClearHandler;
-import handlers.LoginHandler;
-import handlers.LogoutHandler;
+import handlers.*;
 import io.javalin.*;
-import handlers.RegisterHandler;
 import service.ApplicationService;
+import service.GameService;
 import service.UserService;
 
 import java.util.Map;
@@ -22,12 +20,15 @@ public class Server {
         //services
         final UserService userService = new UserService(dataAccess);
         final ApplicationService applicationService = new ApplicationService(dataAccess);
+        final GameService gameService = new GameService(dataAccess);
         //handlers
         final ClearHandler clearHandler = new ClearHandler(applicationService);
 
         final RegisterHandler registerHandler = new RegisterHandler(userService);
         final LoginHandler loginHandler = new LoginHandler(userService);
         final LogoutHandler logoutHandler = new LogoutHandler(userService);
+
+        final ListGamesHandler listGamesHandler = new ListGamesHandler(gameService);
 
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
@@ -36,6 +37,7 @@ public class Server {
         javalin.post("/session",loginHandler::login);
         javalin.delete("/session",logoutHandler::logout);
         javalin.delete("/db",clearHandler::clear);
+        javalin.get("/game",listGamesHandler::listGames);
 
         //exceptions
         javalin.exception(AlreadyTakenException.class, (e, ctx) -> {

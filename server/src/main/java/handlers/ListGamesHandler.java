@@ -15,7 +15,8 @@ public class ListGamesHandler extends Handler{
     }
 
     public void listGames(Context ctx) throws DataAccessException{
-        ListGamesRequest request = new Gson().fromJson(ctx.body(), ListGamesRequest.class);
+        String header = ctx.header("authorization");
+        ListGamesRequest request = new ListGamesRequest(header);
 
         ListGamesResult result = this.service.listGames(request);
 
