@@ -10,10 +10,12 @@ import java.util.Objects;
 
 public class GameService extends Service{
     DataAccess dataAccess;
+    int lowestGameId;
 
     public GameService(DataAccess dataAccess){
         super(dataAccess);
         this.dataAccess = dataAccess;
+        this.lowestGameId = 1;
     }
 
     public ListGamesResult listGames(ListGamesRequest request) throws DataAccessException {
@@ -27,23 +29,12 @@ public class GameService extends Service{
         validateNotNull(request);
         validateAuthToken(request.authToken());
 
-        int gameId = 1;
-
-        if (dataAccess.getGamesCount() >= Integer.MAX_VALUE - 1){
-            throw new DataAccessException("No free ID's");
-        }
-
-        for (int i = 1; i <= Integer.MAX_VALUE - 1; i++){
-            GameData foundGame = dataAccess.getGameDataByID(i);
-
-            if (foundGame == null){
-                gameId = i;
-                break;
-            }
-        }
+        int gameId = this.lowestGameId;
 
         GameData gameData = new GameData(gameId,null,null, request.gameName(), new ChessGame());
         dataAccess.addGameData(gameData);
+
+        this.lowestGameId += 1;
 
         return new CreateGameResult(gameData.gameID());
     }

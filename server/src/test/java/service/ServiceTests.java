@@ -102,9 +102,8 @@ public class ServiceTests {
                 () -> Assertions.assertThrows(InvalidAuthToken.class, () -> gameService.createGame(cgrThree))
         );
 
-        for (int i = 1; i <= Integer.MAX_VALUE - 1; i++){
-            CreateGameRequest request = new CreateGameRequest(userResultOne.authToken(),"pain");
-            gameService.createGame(request);
-        }
+        CreateGameRequest goodRequest = new CreateGameRequest(userResultOne.authToken(),"pain");
+
+        CreateGameResult goodResult = gameService.createGame(goodRequest);
     }
 }
