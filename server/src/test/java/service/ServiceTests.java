@@ -63,4 +63,48 @@ public class ServiceTests {
 
         userService.logout(new LogoutRequest(loginResult.authToken()));
     }
+
+    @Test
+    @DisplayName("GameServiceTests")
+    public void GameServiceTests() throws DataAccessException {
+        DataAccess dataAccess = new MemoryDataAccess();
+        GameService gameService = new GameService(dataAccess);
+        UserService userService = new UserService(dataAccess);
+
+        RegisterRequest registerOne = new RegisterRequest("one","one","one");
+        RegisterRequest registerTwo = new RegisterRequest("two","two","two");
+        RegisterRequest registerThree = new RegisterRequest("three","three","three");
+
+        RegisterResult userResultOne = userService.register(registerOne);
+        RegisterResult userResultThree = userService.register(registerTwo);
+        RegisterResult userResultFour = userService.register(registerThree);
+
+        String badAuth = "imanevilauthandIhateeveryone";
+
+        ListGamesRequest lgrOne = new ListGamesRequest(userResultOne.authToken());
+        ListGamesRequest lgrTwo = new ListGamesRequest(null);
+        ListGamesRequest lgrThree = new ListGamesRequest(badAuth);
+
+        ListGamesResult gamesList = gameService.listGames(lgrOne);
+
+        Assertions.assertAll(
+                () -> Assertions.assertThrows(DataAccessException.class, () -> gameService.listGames(lgrTwo)),
+                () -> Assertions.assertThrows(InvalidAuthToken.class, () -> gameService.listGames(lgrThree))
+        );
+
+        CreateGameRequest cgrOne = new CreateGameRequest(null,"bruh");
+        CreateGameRequest cgrTwo = new CreateGameRequest("yer",null);
+        CreateGameRequest cgrThree = new CreateGameRequest(badAuth,"bruh");
+
+        Assertions.assertAll(
+                () -> Assertions.assertThrows(DataAccessException.class, () -> gameService.createGame(cgrOne)),
+                () -> Assertions.assertThrows(DataAccessException.class, () -> gameService.createGame(cgrTwo)),
+                () -> Assertions.assertThrows(InvalidAuthToken.class, () -> gameService.createGame(cgrThree))
+        );
+
+        for (int i = 1; i <= Integer.MAX_VALUE - 1; i++){
+            CreateGameRequest request = new CreateGameRequest(userResultOne.authToken(),"pain");
+            gameService.createGame(request);
+        }
+    }
 }
