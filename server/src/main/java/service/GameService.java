@@ -7,7 +7,6 @@ import dataaccess.InvalidTeamException;
 import model.*;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class GameService extends Service{
     DataAccess dataAccess;
@@ -46,7 +45,7 @@ public class GameService extends Service{
         GameData gameData = new GameData(gameId,null,null, request.gameName(), new ChessGame());
         dataAccess.addGameData(gameData);
 
-        return new CreateGameResult(gameData.gameId());
+        return new CreateGameResult(gameData.gameID());
     }
 
     public void joinGame(JoinGameRequest request) throws DataAccessException{
@@ -75,11 +74,11 @@ public class GameService extends Service{
         GameData updatedGame;
 
         if (request.playerColor().equals("BLACK")){
-            updatedGame = new GameData(foundGame.gameId(),foundGame.whiteUsername(),username,foundGame.gameName(),foundGame.game());
+            updatedGame = new GameData(foundGame.gameID(),foundGame.whiteUsername(),username,foundGame.gameName(),foundGame.game());
         }else{
-            updatedGame = new GameData(foundGame.gameId(),username,foundGame.blackUsername(),foundGame.gameName(),foundGame.game());
+            updatedGame = new GameData(foundGame.gameID(),username,foundGame.blackUsername(),foundGame.gameName(),foundGame.game());
         }
 
-        dataAccess.updateGame(updatedGame.gameId(),updatedGame);
+        dataAccess.updateGame(updatedGame.gameID(),updatedGame);
     }
 }

@@ -44,7 +44,7 @@ public class MemoryDataAccess implements DataAccess{
     }
 
     public void addGameData(GameData gameData){
-        this.games.put(gameData.gameId(),gameData);
+        this.games.put(gameData.gameID(),gameData);
     }
 
     public int getGamesCount(){
