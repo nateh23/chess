@@ -46,7 +46,7 @@ public class Server {
             ctx.status(400).result(new Gson().toJson((Map.of("message","Error: bad request"))));
         });
 
-        javalin.exception(InvalidPasswordException.class, (e, ctx) -> {
+        javalin.exception(InvalidCredentialsException.class, (e, ctx) -> {
             ctx.status(401).result(new Gson().toJson((Map.of("message","Error: unauthorized"))));
         });
 

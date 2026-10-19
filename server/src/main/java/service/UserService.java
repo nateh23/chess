@@ -3,6 +3,7 @@ package service;
 import dataaccess.*;
 import model.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserService{
@@ -13,6 +14,10 @@ public class UserService{
     }
 
     public RegisterResult register(RegisterRequest request) throws AlreadyTakenException, DataAccessException {
+        if (request.hasNull()){
+            throw new DataAccessException("Invalid request");
+        }
+
         UserData user = dataAccess.getUser(request.username());
 
         if (user != null){
@@ -28,17 +33,18 @@ public class UserService{
     };
 
     public LoginResult login(LoginRequest request) throws DataAccessException {
+        if (request.hasNull()){
+            throw new DataAccessException("Invalid request");
+        }
+
         UserData user = dataAccess.getUser(request.username());
 
         if (user == null){
-            throw new DataAccessException("User does not exist");
+            throw new InvalidCredentialsException("User does not exist");
         }
 
-        if (user.password() == request.password()){
-            System.out.println(user.password());
-            System.out.println(request.password());
-            System.out.println("bad password");
-            throw new InvalidPasswordException("Password does not match!");
+        if (!Objects.equals(user.password(), request.password())){
+            throw new InvalidCredentialsException("Password does not match!");
         }
 
         AuthData newAuth = new AuthData(UUID.randomUUID().toString(), request.username());
@@ -48,6 +54,10 @@ public class UserService{
     };
 
     public void logout(LogoutRequest request) throws DataAccessException{
+        if (request.hasNull()){
+            throw new DataAccessException("Invalid request");
+        }
+
         String username = dataAccess.getAuth(request.authToken());
 
         if(username == null){
