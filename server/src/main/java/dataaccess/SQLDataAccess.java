@@ -173,7 +173,7 @@ public class SQLDataAccess implements DataAccess{
         }catch (SQLException ex){
             throw new DataAccessException("SQL Connection Failed");
         }
-        return List.of();
+        return list;
     }
 
     public void addGameData(GameData gameData) throws DataAccessException {
