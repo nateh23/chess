@@ -1,5 +1,6 @@
 package dataaccess;
 
+import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -10,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -131,12 +133,13 @@ public class SQLDataAccess implements DataAccess{
 
     public void deleteAuth(String authToken) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "DELETE FROM users WHERE authToken=?";
+            var statement = "DELETE FROM auth WHERE authToken=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)){
                 ps.setString(1,authToken);
                 ps.executeUpdate();
             }
         }catch (SQLException ex){
+            log.error("e: ", ex);
             throw new DataAccessException("SQL Connection Failed");
         }
     }
@@ -146,6 +149,7 @@ public class SQLDataAccess implements DataAccess{
             var statement = "DROP TABLE auth, users, games";
             try (PreparedStatement ps = conn.prepareStatement(statement)){
                 ps.executeUpdate();
+                configureDatabase();
             }
         }catch (SQLException ex){
             throw new DataAccessException("SQL Connection Failed");
@@ -153,11 +157,36 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public Collection<GameData> listGames() throws DataAccessException {
+        Collection<GameData> list = new ArrayList<>();
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT gameID, json FROM games";
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        var json = rs.getString("json");
+                        GameData game = new Gson().fromJson(json,GameData.class);
+                        list.add(game);
+                    }
+                }
+            }
+        }catch (SQLException ex){
+            throw new DataAccessException("SQL Connection Failed");
+        }
         return List.of();
     }
 
     public void addGameData(GameData gameData) throws DataAccessException {
-
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "INSERT INTO games (gameID, json) VALUES (?,?)";
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.setInt(1,gameData.gameID());
+                ps.setString(2, new Gson().toJson(gameData));
+                ps.executeUpdate();
+            }
+        }catch (SQLException ex){
+            throw new DataAccessException("SQL Connection Failed");
+        }
     }
 
     public int getGamesCount() throws DataAccessException {
