@@ -19,6 +19,17 @@ public class DatabaseManager {
     /**
      * Creates the database if it does not already exist.
      */
+    private final String[] statements = {
+            """
+             CREATE TABLE IF NOT EXISTS auth (
+             `authToken` varchar(256) NOT NULL,
+             `authToken` varchar(256) NOT NULL,
+             PRIMARY KEY (`authToken`),
+             INDEX(username)
+             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """
+    };
+
     static public void createDatabase() throws DataAccessException {
         var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
         try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
