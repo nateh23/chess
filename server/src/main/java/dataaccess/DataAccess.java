@@ -24,8 +24,6 @@ public interface DataAccess {
 
     public void addGameData(GameData gameData) throws DataAccessException;
 
-    public int getGamesCount() throws DataAccessException;
-
     public GameData getGameDataByID(int gameId) throws DataAccessException;
 
     public void updateGame(int gameId, GameData gameData) throws DataAccessException;
