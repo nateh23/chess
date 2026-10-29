@@ -3,6 +3,8 @@ package dataaccess;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,6 +39,7 @@ public class SQLDataAccess implements DataAccess{
              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
+    private static final Logger log = LoggerFactory.getLogger(SQLDataAccess.class);
 
     public SQLDataAccess(){
         try {
@@ -82,11 +85,30 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public void createAuth(AuthData authData) throws DataAccessException {
-
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "INSERT INTO auth (authToken, username) VALUES (?,?)";
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.setString(1,authData.authToken());
+                ps.setString(2,authData.username());
+                ps.executeUpdate();
+            }
+        }catch (SQLException ex){
+            throw new DataAccessException("SQL Connection Failed");
+        }
     }
 
     public void createUser(UserData userData) throws DataAccessException {
-
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "INSERT INTO users (username, password, email) VALUES (?,?,?)";
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.setString(1,userData.username());
+                ps.setString(2,userData.password());
+                ps.setString(3,userData.email());
+                ps.executeUpdate();
+            }
+        }catch (SQLException ex){
+            throw new DataAccessException("SQL Connection Failed");
+        }
     }
 
     public String getAuth(String authToken) throws DataAccessException {
