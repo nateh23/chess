@@ -5,6 +5,8 @@ import model.GameData;
 import model.UserData;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
@@ -58,6 +60,24 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public UserData getUser(String username) throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username, password, email from users WHERE username=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.setString(1,username);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        String dataUser = rs.getString("username");
+                        String passwordHashed = rs.getString("password");
+                        String email = rs.getString("email");
+
+                        return new UserData(dataUser,passwordHashed,email);
+                    }
+                }
+            }
+        }catch (SQLException ex){
+            throw new DataAccessException("SQL Connection Failed");
+        }
+
         return null;
     }
 
