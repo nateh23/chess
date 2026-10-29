@@ -19,22 +19,41 @@ public class DatabaseManager {
     /**
      * Creates the database if it does not already exist.
      */
-    private final String[] statements = {
+    private static final String[] statements = {
             """
              CREATE TABLE IF NOT EXISTS auth (
              `authToken` varchar(256) NOT NULL,
-             `authToken` varchar(256) NOT NULL,
+             `username` varchar(256) NOT NULL,
              PRIMARY KEY (`authToken`),
              INDEX(username)
+             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """,
+            """
+             CREATE TABLE IF NOT EXISTS users (
+             `username` varchar(256) NOT NULL,
+             `json` TEXT NOT NULL,
+             PRIMARY KEY (`username`)
+             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """,
+            """
+             CREATE TABLE IF NOT EXISTS games (
+             `gameID` int NOT NULL,
+             `json` TEXT NOT NULL,
+             PRIMARY KEY (`gameID`)
              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
 
     static public void createDatabase() throws DataAccessException {
-        var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
-        try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
-             var preparedStatement = conn.prepareStatement(statement)) {
-            preparedStatement.executeUpdate();
+        try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword)) {
+
+            for (String statement: statements){
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                } catch (SQLException ex) {
+                    throw new DataAccessException("failed to create database", ex);
+                }
+            }
         } catch (SQLException ex) {
             throw new DataAccessException("failed to create database", ex);
         }
