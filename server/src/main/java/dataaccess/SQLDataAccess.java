@@ -189,11 +189,11 @@ public class SQLDataAccess implements DataAccess{
         }
     }
 
-    public GameData getGameDataByID(int gameId) throws DataAccessException {
+    public GameData getGameDataByID(int gameID) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT gameID, json from games WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)){
-                ps.setInt(1,gameId);
+                ps.setInt(1,gameID);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         var json = rs.getString("json");
@@ -208,7 +208,16 @@ public class SQLDataAccess implements DataAccess{
         return null;
     }
 
-    public void updateGame(int gameId, GameData gameData) throws DataAccessException {
-
+    public void updateGame(int gameID, GameData gameData) throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "UPDATE games SET json=? WHERE gameID=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.setInt(2,gameData.gameID());
+                ps.setString(1, new Gson().toJson(gameData));
+                ps.executeUpdate();
+            }
+        }catch (SQLException ex){
+            throw new DataAccessException("SQL Connection Failed");
+        }
     }
 }
