@@ -4,6 +4,8 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,7 +22,8 @@ public class SQLDataAccess implements DataAccess{
             """
              CREATE TABLE IF NOT EXISTS users (
              `username` varchar(256) NOT NULL,
-             `json` TEXT NOT NULL,
+             `password` varchar(256) NOT NULL,
+             `email` varchar(256) NOT NULL,
              PRIMARY KEY (`username`)
              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """,
@@ -34,7 +37,24 @@ public class SQLDataAccess implements DataAccess{
     };
 
     public SQLDataAccess(){
+        try {
+            configureDatabase();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    private void configureDatabase() throws DataAccessException {
+        DatabaseManager.createDatabase();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            for (String statement: statements){
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        }catch (SQLException ex){
+            throw new DataAccessException("SQL Connection Failed");
+        }
     }
 
     public UserData getUser(String username) throws DataAccessException {

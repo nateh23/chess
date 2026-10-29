@@ -16,7 +16,7 @@ public class Server {
 
     public Server() {
         //db
-        final MemoryDataAccess dataAccess = new MemoryDataAccess();
+        final SQLDataAccess dataAccess = new SQLDataAccess();
         //services
         final UserService userService = new UserService(dataAccess);
         final ApplicationService applicationService = new ApplicationService(dataAccess);
