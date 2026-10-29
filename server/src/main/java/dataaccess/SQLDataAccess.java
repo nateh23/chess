@@ -112,15 +112,44 @@ public class SQLDataAccess implements DataAccess{
     }
 
     public String getAuth(String authToken) throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT authToken, username from auth WHERE authToken=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.setString(1,authToken);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getString("authToken");
+                    }
+                }
+            }
+        }catch (SQLException ex){
+            throw new DataAccessException("SQL Connection Failed");
+        }
+
         return "";
     }
 
     public void deleteAuth(String authToken) throws DataAccessException {
-
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "DELETE FROM users WHERE authToken=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.setString(1,authToken);
+                ps.executeUpdate();
+            }
+        }catch (SQLException ex){
+            throw new DataAccessException("SQL Connection Failed");
+        }
     }
 
     public void clearAllData() throws DataAccessException {
-
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "DROP TABLE auth, users, games";
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.executeUpdate();
+            }
+        }catch (SQLException ex){
+            throw new DataAccessException("SQL Connection Failed");
+        }
     }
 
     public Collection<GameData> listGames() throws DataAccessException {
