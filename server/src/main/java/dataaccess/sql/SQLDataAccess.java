@@ -138,6 +138,8 @@ public class SQLDataAccess implements DataAccess {
             try (PreparedStatement ps = conn.prepareStatement(statement)){
                 ps.setString(1,authToken);
                 ps.executeUpdate();
+            } catch (SQLException e) {
+                throw new DataAccessException("SQL Connection Failed");
             }
         }catch (SQLException ex){
             log.error("e: ", ex);

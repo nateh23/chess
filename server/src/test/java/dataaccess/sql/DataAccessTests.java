@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -47,7 +48,6 @@ public class DataAccessTests {
         Assertions.assertAll(
                 () -> Assertions.assertThrows(DataAccessException.class, () -> dataAccess.createUser(new UserData(usernameOne,passwordOne,email))),
                 () -> Assertions.assertThrows(DataAccessException.class, () -> dataAccess.createAuth(newAuth))
-//                () -> Assertions.assertThrows(DataAccessException.class, () -> dataAccess.getAuth(null))
         );
 
         dataAccess.deleteAuth(newAuth.authToken());
@@ -58,6 +58,12 @@ public class DataAccessTests {
         dataAccess.createAuth(newAuth);
 
         dataAccess.addGameData(new GameData(1,null,null,"bruh", new ChessGame()));
+
+        Assertions.assertAll(
+                () -> Assertions.assertThrows(DataAccessException.class, () ->
+                        dataAccess.addGameData(new GameData(1,null,null,"bruh", new ChessGame())))
+        );
+
 
         Collection<GameData> secondList = dataAccess.listGames();
 
@@ -73,5 +79,22 @@ public class DataAccessTests {
         GameData bur = new GameData(1,usernameOne,null,"bruh", test.game());
 
         dataAccess.updateGame(1,bur);
+
+        //alright lets blow up the DB
+        try (var conn = DatabaseManager.getConnection();
+            var ps = conn.prepareStatement("DROP TABLE users,games,auth")){
+            ps.executeUpdate();
+        }catch (SQLException e){
+
+        }
+
+        Assertions.assertAll(
+                () -> Assertions.assertThrows(DataAccessException.class, () -> dataAccess.getUser("erm")),
+                () -> Assertions.assertThrows(DataAccessException.class, () -> dataAccess.getAuth("erm")),
+                () -> Assertions.assertThrows(DataAccessException.class, () -> dataAccess.deleteAuth("erm")),
+                () -> Assertions.assertThrows(DataAccessException.class, dataAccess::listGames),
+                () -> Assertions.assertThrows(DataAccessException.class, () -> dataAccess.getGameDataByID(1)),
+                () -> Assertions.assertThrows(DataAccessException.class, () -> dataAccess.updateGame(1,bur))
+        );
     }
 }
