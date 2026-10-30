@@ -127,7 +127,7 @@ public class SQLDataAccess implements DataAccess{
             throw new DatabaseConnectionError("SQL Connection Failed", ex);
         }
 
-        return "";
+        return null;
     }
 
     public void deleteAuth(String authToken) throws DataAccessException {
