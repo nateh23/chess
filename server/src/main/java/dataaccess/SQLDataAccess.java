@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class SQLDataAccess implements DataAccess{
     private static final String[] statements = {
@@ -60,7 +59,7 @@ public class SQLDataAccess implements DataAccess{
                 }
             }
         }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed");
+            throw new DatabaseConnectionError("SQL Connection Failed", ex);
         }
     }
 
@@ -80,7 +79,7 @@ public class SQLDataAccess implements DataAccess{
                 }
             }
         }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed");
+            throw new DatabaseConnectionError("SQL Connection Failed", ex);
         }
 
         return null;
@@ -95,7 +94,7 @@ public class SQLDataAccess implements DataAccess{
                 ps.executeUpdate();
             }
         }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed");
+            throw new DatabaseConnectionError("SQL Connection Failed", ex);
         }
     }
 
@@ -109,7 +108,7 @@ public class SQLDataAccess implements DataAccess{
                 ps.executeUpdate();
             }
         }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed");
+            throw new DatabaseConnectionError("SQL Connection Failed", ex);
         }
     }
 
@@ -125,7 +124,7 @@ public class SQLDataAccess implements DataAccess{
                 }
             }
         }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed");
+            throw new DatabaseConnectionError("SQL Connection Failed", ex);
         }
 
         return "";
@@ -140,7 +139,7 @@ public class SQLDataAccess implements DataAccess{
             }
         }catch (SQLException ex){
             log.error("e: ", ex);
-            throw new DataAccessException("SQL Connection Failed");
+            throw new DatabaseConnectionError("SQL Connection Failed", ex);
         }
     }
 
@@ -152,7 +151,7 @@ public class SQLDataAccess implements DataAccess{
                 configureDatabase();
             }
         }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed");
+            throw new DatabaseConnectionError("SQL Connection Failed", ex);
         }
     }
 
@@ -171,7 +170,7 @@ public class SQLDataAccess implements DataAccess{
                 }
             }
         }catch (SQLException ex){
-            throw new UniqueException("SQL Connection Failed");
+            throw new DatabaseConnectionError("SQL Connection Failed", ex);
         }
         return list;
     }
@@ -185,7 +184,7 @@ public class SQLDataAccess implements DataAccess{
                 ps.executeUpdate();
             }
         }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed");
+            throw new DatabaseConnectionError("SQL Connection Failed", ex);
         }
     }
 
@@ -202,7 +201,7 @@ public class SQLDataAccess implements DataAccess{
                 }
             }
         }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed");
+            throw new DatabaseConnectionError("SQL Connection Failed", ex);
         }
 
         return null;
@@ -217,7 +216,7 @@ public class SQLDataAccess implements DataAccess{
                 ps.executeUpdate();
             }
         }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed");
+            throw new DatabaseConnectionError("SQL Connection Failed", ex);
         }
     }
 }
