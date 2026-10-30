@@ -119,7 +119,7 @@ public class SQLDataAccess implements DataAccess{
                 ps.setString(1,authToken);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        return rs.getString("authToken");
+                        return rs.getString("username");
                     }
                 }
             }
