@@ -171,7 +171,7 @@ public class SQLDataAccess implements DataAccess{
                 }
             }
         }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed");
+            throw new UniqueException("SQL Connection Failed");
         }
         return list;
     }

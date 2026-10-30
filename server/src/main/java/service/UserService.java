@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -23,7 +24,9 @@ public class UserService extends Service{
             throw new AlreadyTakenException("Username already taken!");
         }
 
-        dataAccess.createUser(new UserData(request.username(),request.password(),request.email()));
+        String hashedPassword = BCrypt.hashpw(request.password(),BCrypt.gensalt());
+
+        dataAccess.createUser(new UserData(request.username(),hashedPassword,request.email()));
 
         AuthData newAuth = new AuthData(UUID.randomUUID().toString(), request.username());
         dataAccess.createAuth(newAuth);
@@ -40,7 +43,7 @@ public class UserService extends Service{
             throw new InvalidCredentialsException("User does not exist");
         }
 
-        if (!Objects.equals(user.password(), request.password())){
+        if (!BCrypt.checkpw(request.password(),user.password())){
             throw new InvalidCredentialsException("Password does not match!");
         }
 

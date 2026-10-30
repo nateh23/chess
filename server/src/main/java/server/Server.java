@@ -63,6 +63,10 @@ public class Server {
         javalin.exception(InvalidTeamException.class, (e, ctx) -> {
             ctx.status(403).result(new Gson().toJson((Map.of("message","Error: already taken"))));
         });
+
+        javalin.exception(UniqueException.class, (e, ctx) -> {
+            ctx.status(500).result(new Gson().toJson((Map.of("message",e))));
+        });
     }
 
     public int run(int desiredPort) {
