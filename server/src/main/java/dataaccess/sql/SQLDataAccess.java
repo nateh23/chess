@@ -1,6 +1,8 @@
-package dataaccess;
+package dataaccess.sql;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -14,7 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class SQLDataAccess implements DataAccess{
+public class SQLDataAccess implements DataAccess {
     private static final String[] statements = {
             """
              CREATE TABLE IF NOT EXISTS auth (
@@ -59,7 +61,7 @@ public class SQLDataAccess implements DataAccess{
                 }
             }
         }catch (SQLException ex){
-            throw new DatabaseConnectionError("SQL Connection Failed", ex);
+            throw new DataAccessException("SQL Connection Failed", ex);
         }
     }
 
@@ -79,7 +81,7 @@ public class SQLDataAccess implements DataAccess{
                 }
             }
         }catch (SQLException ex){
-            throw new DatabaseConnectionError("SQL Connection Failed", ex);
+            throw new DataAccessException("SQL Connection Failed", ex);
         }
 
         return null;
@@ -94,7 +96,7 @@ public class SQLDataAccess implements DataAccess{
                 ps.executeUpdate();
             }
         }catch (SQLException ex){
-            throw new DatabaseConnectionError("SQL Connection Failed", ex);
+            throw new DataAccessException("SQL Connection Failed", ex);
         }
     }
 
@@ -108,7 +110,7 @@ public class SQLDataAccess implements DataAccess{
                 ps.executeUpdate();
             }
         }catch (SQLException ex){
-            throw new DatabaseConnectionError("SQL Connection Failed", ex);
+            throw new DataAccessException("SQL Connection Failed", ex);
         }
     }
 
@@ -124,7 +126,7 @@ public class SQLDataAccess implements DataAccess{
                 }
             }
         }catch (SQLException ex){
-            throw new DatabaseConnectionError("SQL Connection Failed", ex);
+            throw new DataAccessException("SQL Connection Failed", ex);
         }
 
         return null;
@@ -139,7 +141,7 @@ public class SQLDataAccess implements DataAccess{
             }
         }catch (SQLException ex){
             log.error("e: ", ex);
-            throw new DatabaseConnectionError("SQL Connection Failed", ex);
+            throw new DataAccessException("SQL Connection Failed", ex);
         }
     }
 
@@ -151,7 +153,7 @@ public class SQLDataAccess implements DataAccess{
                 configureDatabase();
             }
         }catch (SQLException ex){
-            throw new DatabaseConnectionError("SQL Connection Failed", ex);
+            throw new DataAccessException("SQL Connection Failed", ex);
         }
     }
 
@@ -170,7 +172,7 @@ public class SQLDataAccess implements DataAccess{
                 }
             }
         }catch (SQLException ex){
-            throw new DatabaseConnectionError("SQL Connection Failed", ex);
+            throw new DataAccessException("SQL Connection Failed", ex);
         }
         return list;
     }
@@ -184,7 +186,7 @@ public class SQLDataAccess implements DataAccess{
                 ps.executeUpdate();
             }
         }catch (SQLException ex){
-            throw new DatabaseConnectionError("SQL Connection Failed", ex);
+            throw new DataAccessException("SQL Connection Failed", ex);
         }
     }
 
@@ -201,7 +203,7 @@ public class SQLDataAccess implements DataAccess{
                 }
             }
         }catch (SQLException ex){
-            throw new DatabaseConnectionError("SQL Connection Failed", ex);
+            throw new DataAccessException("SQL Connection Failed", ex);
         }
 
         return null;
@@ -216,7 +218,7 @@ public class SQLDataAccess implements DataAccess{
                 ps.executeUpdate();
             }
         }catch (SQLException ex){
-            throw new DatabaseConnectionError("SQL Connection Failed", ex);
+            throw new DataAccessException("SQL Connection Failed", ex);
         }
     }
 }
