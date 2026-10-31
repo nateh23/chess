@@ -9,6 +9,7 @@ import model.UserData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.naming.Context;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +18,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class SQLDataAccess implements DataAccess {
+    private interface Params { void set(PreparedStatement ps) throws SQLException;}
+
+    private void executeUpdate(String statement, Params params) throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(statement)) {
+                params.set(ps);
+                ps.executeUpdate();
+        }catch (SQLException ex){
+            throw new DataAccessException("SQL Connection Failed", ex);
+        }
+    }
+
     private static final String[] statements = {
             """
              CREATE TABLE IF NOT EXISTS auth (
@@ -88,16 +101,10 @@ public class SQLDataAccess implements DataAccess {
     }
 
     public void createAuth(AuthData authData) throws DataAccessException {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "INSERT INTO auth (authToken, username) VALUES (?,?)";
-            try (PreparedStatement ps = conn.prepareStatement(statement)){
-                ps.setString(1,authData.authToken());
-                ps.setString(2,authData.username());
-                ps.executeUpdate();
-            }
-        }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed", ex);
-        }
+        executeUpdate("INSERT INTO auth (authToken, username) VALUES (?,?)", ps -> {
+            ps.setString(1,authData.authToken());
+            ps.setString(2,authData.username());
+        });
     }
 
     public void createUser(UserData userData) throws DataAccessException {
