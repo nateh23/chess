@@ -136,23 +136,16 @@ public class SQLDataAccess implements DataAccess {
     }
 
     public Collection<GameData> listGames() throws DataAccessException {
-        Collection<GameData> list = new ArrayList<>();
-
-        try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT gameID, json FROM games";
-            try (PreparedStatement ps = conn.prepareStatement(statement)){
-                try (ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        var json = rs.getString("json");
-                        GameData game = new Gson().fromJson(json,GameData.class);
-                        list.add(game);
+        return executeQuery("SELECT gameID, json FROM games",
+                ps -> {},
+                rs -> {
+                    Collection<GameData> list = new ArrayList<>();
+                    while (rs.next()){
+                        list.add(new Gson().fromJson(rs.getString("json"),GameData.class));
                     }
-                }
-            }
-        }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed", ex);
-        }
-        return list;
+
+                    return list;
+                });
     }
 
     public void addGameData(GameData gameData) throws DataAccessException {
