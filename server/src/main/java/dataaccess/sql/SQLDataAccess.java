@@ -92,25 +92,14 @@ public class SQLDataAccess implements DataAccess {
     }
 
     public UserData getUser(String username) throws DataAccessException {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username, password, email from users WHERE username=?";
-            try (PreparedStatement ps = conn.prepareStatement(statement)){
-                ps.setString(1,username);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        String dataUser = rs.getString("username");
-                        String passwordHashed = rs.getString("password");
-                        String email = rs.getString("email");
-
-                        return new UserData(dataUser,passwordHashed,email);
-                    }
-                }
-            }
-        }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed", ex);
-        }
-
-        return null;
+        return executeQuery("SELECT username, password, email from users WHERE username=?",
+                ps -> {
+                    ps.setString(1, username);},
+                rs -> rs.next()
+                        ? new UserData(rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("email"))
+                        : null);
     }
 
     public void createAuth(AuthData authData) throws DataAccessException {
