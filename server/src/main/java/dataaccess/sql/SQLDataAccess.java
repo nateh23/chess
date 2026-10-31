@@ -108,17 +108,11 @@ public class SQLDataAccess implements DataAccess {
     }
 
     public void createUser(UserData userData) throws DataAccessException {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "INSERT INTO users (username, password, email) VALUES (?,?,?)";
-            try (PreparedStatement ps = conn.prepareStatement(statement)){
-                ps.setString(1,userData.username());
-                ps.setString(2,userData.password());
-                ps.setString(3,userData.email());
-                ps.executeUpdate();
-            }
-        }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed", ex);
-        }
+        executeUpdate("INSERT INTO users (username, password, email) VALUES (?,?,?)", ps -> {
+            ps.setString(1,userData.username());
+            ps.setString(2,userData.password());
+            ps.setString(3,userData.email());
+        });
     }
 
     public String getAuth(String authToken) throws DataAccessException {
@@ -140,30 +134,14 @@ public class SQLDataAccess implements DataAccess {
     }
 
     public void deleteAuth(String authToken) throws DataAccessException {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "DELETE FROM auth WHERE authToken=?";
-            try (PreparedStatement ps = conn.prepareStatement(statement)){
-                ps.setString(1,authToken);
-                ps.executeUpdate();
-            } catch (SQLException e) {
-                throw new DataAccessException("SQL Connection Failed");
-            }
-        }catch (SQLException ex){
-            log.error("e: ", ex);
-            throw new DataAccessException("SQL Connection Failed", ex);
-        }
+        executeUpdate("DELETE FROM auth WHERE authToken=?", ps -> {
+            ps.setString(1,authToken);
+        });
     }
 
     public void clearAllData() throws DataAccessException {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "DROP TABLE auth, users, games";
-            try (PreparedStatement ps = conn.prepareStatement(statement)){
-                ps.executeUpdate();
-                configureDatabase();
-            }
-        }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed", ex);
-        }
+        executeUpdate("DROP TABLE auth, users, games", ps -> {});
+        configureDatabase();
     }
 
     public Collection<GameData> listGames() throws DataAccessException {
@@ -187,16 +165,10 @@ public class SQLDataAccess implements DataAccess {
     }
 
     public void addGameData(GameData gameData) throws DataAccessException {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "INSERT INTO games (gameID, json) VALUES (?,?)";
-            try (PreparedStatement ps = conn.prepareStatement(statement)){
-                ps.setInt(1,gameData.gameID());
-                ps.setString(2, new Gson().toJson(gameData));
-                ps.executeUpdate();
-            }
-        }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed", ex);
-        }
+        executeUpdate("INSERT INTO games (gameID, json) VALUES (?,?)", ps -> {
+            ps.setInt(1,gameData.gameID());
+            ps.setString(2, new Gson().toJson(gameData));
+        });
     }
 
     public GameData getGameDataByID(int gameID) throws DataAccessException {
@@ -219,15 +191,9 @@ public class SQLDataAccess implements DataAccess {
     }
 
     public void updateGame(int gameID, GameData gameData) throws DataAccessException {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "UPDATE games SET json=? WHERE gameID=?";
-            try (PreparedStatement ps = conn.prepareStatement(statement)){
-                ps.setInt(2,gameData.gameID());
-                ps.setString(1, new Gson().toJson(gameData));
-                ps.executeUpdate();
-            }
-        }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed", ex);
-        }
+        executeUpdate("UPDATE games SET json=? WHERE gameID=?", ps -> {
+            ps.setInt(2,gameData.gameID());
+            ps.setString(1, new Gson().toJson(gameData));
+        });
     }
 }
