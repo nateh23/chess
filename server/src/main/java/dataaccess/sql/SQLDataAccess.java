@@ -43,7 +43,7 @@ public class SQLDataAccess implements DataAccess {
         }
     }
 
-    private static final String[] statements = {
+    private static final String[] Statements = {
             """
              CREATE TABLE IF NOT EXISTS auth (
              `authToken` varchar(256) NOT NULL,
@@ -68,7 +68,6 @@ public class SQLDataAccess implements DataAccess {
              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
-    private static final Logger log = LoggerFactory.getLogger(SQLDataAccess.class);
 
     public SQLDataAccess(){
         try {
@@ -81,7 +80,7 @@ public class SQLDataAccess implements DataAccess {
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (Connection conn = DatabaseManager.getConnection()) {
-            for (String statement: statements){
+            for (String statement: Statements){
                 try (var preparedStatement = conn.prepareStatement(statement)) {
                     preparedStatement.executeUpdate();
                 }
