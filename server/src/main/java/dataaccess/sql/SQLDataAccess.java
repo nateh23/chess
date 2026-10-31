@@ -163,22 +163,12 @@ public class SQLDataAccess implements DataAccess {
     }
 
     public GameData getGameDataByID(int gameID) throws DataAccessException {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT gameID, json from games WHERE gameID=?";
-            try (PreparedStatement ps = conn.prepareStatement(statement)){
-                ps.setInt(1,gameID);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        var json = rs.getString("json");
-                        return new Gson().fromJson(json,GameData.class);
-                    }
-                }
-            }
-        }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed", ex);
-        }
-
-        return null;
+        return executeQuery("SELECT gameID, json from games WHERE gameID=?",
+                ps -> {
+                    ps.setInt(1, gameID);},
+                rs -> rs.next()
+                        ? new Gson().fromJson(rs.getString("json"),GameData.class)
+                        : null);
     }
 
     public void updateGame(int gameID, GameData gameData) throws DataAccessException {
