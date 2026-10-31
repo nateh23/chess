@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.naming.Context;
+import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,11 +21,23 @@ import java.util.Collection;
 public class SQLDataAccess implements DataAccess {
     private interface Params { void set(PreparedStatement ps) throws SQLException;}
 
+    private interface Reader<T> { T read(ResultSet rs) throws SQLException;}
+
     private void executeUpdate(String statement, Params params) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(statement)) {
                 params.set(ps);
                 ps.executeUpdate();
+        }catch (SQLException ex){
+            throw new DataAccessException("SQL Connection Failed", ex);
+        }
+    }
+
+    private <T> T executeQuery(String statement, Params params, Reader<T> reader) throws DataAccessException{
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(statement)) {
+            params.set(ps);
+            return reader.read(ps.executeQuery());
         }catch (SQLException ex){
             throw new DataAccessException("SQL Connection Failed", ex);
         }
@@ -116,21 +129,10 @@ public class SQLDataAccess implements DataAccess {
     }
 
     public String getAuth(String authToken) throws DataAccessException {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT authToken, username from auth WHERE authToken=?";
-            try (PreparedStatement ps = conn.prepareStatement(statement)){
-                ps.setString(1,authToken);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return rs.getString("username");
-                    }
-                }
-            }
-        }catch (SQLException ex){
-            throw new DataAccessException("SQL Connection Failed", ex);
-        }
-
-        return null;
+        return executeQuery("SELECT authToken, username from auth WHERE authToken=?",
+                ps -> {
+                    ps.setString(1, authToken);},
+                rs -> rs.next() ? rs.getString("username") : null);
     }
 
     public void deleteAuth(String authToken) throws DataAccessException {
