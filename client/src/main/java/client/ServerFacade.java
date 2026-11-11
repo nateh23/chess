@@ -6,6 +6,7 @@ import model.UserData;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
@@ -17,7 +18,7 @@ public class ServerFacade {
 
     public void registerUser(UserData user){
         var request = buildRequest("POST","/user",user);
-
+        var response = sendRequest(request);
     }
 
 
@@ -37,6 +38,14 @@ public class ServerFacade {
             return HttpRequest.BodyPublishers.ofString(new Gson().toJson(request));
         } else {
             return HttpRequest.BodyPublishers.noBody();
+        }
+    }
+
+    private HttpResponse<String> sendRequest(HttpRequest request) throws ResponseException {
+        try {
+            return client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception ex) {
+            throw new ResponseException(ex.getMessage());
         }
     }
 }
