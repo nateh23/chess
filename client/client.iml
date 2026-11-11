@@ -10,5 +10,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="google.code.gson" level="application" />
     <orderEntry type="module" module-name="server" scope="TEST" />
+    <orderEntry type="module" module-name="shared" />
+    <orderEntry type="library" scope="TEST" name="junit.jupiter" level="project" />
   </component>
 </module>
