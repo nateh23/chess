@@ -1,9 +1,7 @@
 package client;
 
 import com.google.gson.Gson;
-import model.RegisterRequest;
-import model.RegisterResult;
-import model.UserData;
+import model.*;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -13,6 +11,13 @@ import java.net.http.HttpResponse;
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
     private final String serverUrl;
+    private String authToken;
+
+    private void verifyAuth(){
+        if (authToken == null){
+            throw new RuntimeException("attempt to run command without auth");
+        }
+    }
 
     public ServerFacade(String url) {
         this.serverUrl = url;
@@ -23,14 +28,32 @@ public class ServerFacade {
         var response = sendRequest(request);
     }
 
-    public void registerUser(UserData user){
-        var request = buildRequest("POST","/user",user);
+    public String registerUser(RegisterRequest requestData){
+        var request = buildRequest("POST","/user",requestData);
         var response = sendRequest(request);
 
         RegisterResult properResult = handleResponse(response,RegisterResult.class);
-        System.out.println(properResult.authToken());
+        this.authToken = properResult.authToken();
+
+        return properResult.username();
     }
 
+    public String loginUser(LoginRequest requestData){
+        var request = buildRequest("POST","/session",requestData);
+        var response = sendRequest(request);
+
+        RegisterResult properResult = handleResponse(response,RegisterResult.class);
+        this.authToken = properResult.authToken();
+        System.out.println(response);
+        return properResult.username();
+    }
+
+    public void logout(){
+        verifyAuth();
+
+        var request = buildRequest("DELETE","/session",null);
+        var response = sendRequest(request);
+    }
 
     //awesome helpers
     private HttpRequest buildRequest(String method, String path, Object body) {
@@ -40,6 +63,11 @@ public class ServerFacade {
         if (body != null) {
             request.setHeader("Content-Type", "application/json");
         }
+
+        if (this.authToken != null){
+            request.setHeader("authorization",authToken);
+        }
+
         return request.build();
     }
 

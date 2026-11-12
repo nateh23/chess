@@ -1,5 +1,7 @@
 package client;
 
+import model.LoginRequest;
+import model.RegisterRequest;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -28,7 +30,10 @@ public class ServerFacadeTests {
     @Test
     public void sampleTest() {
         Assertions.assertTrue(true);
-        facade.registerUser(new UserData("fred","fred","fred"));
+        facade.registerUser(new RegisterRequest("fred","fred","fred"));
+        facade.logout();
+        facade.loginUser(new LoginRequest("fred","fred"));
+        facade.logout();
     }
 
 }
