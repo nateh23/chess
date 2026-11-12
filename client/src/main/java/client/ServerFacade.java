@@ -1,6 +1,8 @@
 package client;
 
 import com.google.gson.Gson;
+import model.RegisterRequest;
+import model.RegisterResult;
 import model.UserData;
 
 import java.net.URI;
@@ -24,8 +26,9 @@ public class ServerFacade {
     public void registerUser(UserData user){
         var request = buildRequest("POST","/user",user);
         var response = sendRequest(request);
-        System.out.println("hello?");
-        System.out.println(response);
+
+        RegisterResult properResult = handleResponse(response,RegisterResult.class);
+        System.out.println(properResult.authToken());
     }
 
 
@@ -75,6 +78,6 @@ public class ServerFacade {
     }
 
     private boolean isSuccessful(int status) {
-        return status / 100 == 2; //taken from petshop, my question though is why is it not just 200?
+        return status / 100 == 2;
     }
 }
