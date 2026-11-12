@@ -16,9 +16,16 @@ public class ServerFacade {
         this.serverUrl = url;
     }
 
+    public void clearDatabase(){
+        var request = buildRequest("DELETE","/db",null);
+        var response = sendRequest(request);
+    }
+
     public void registerUser(UserData user){
         var request = buildRequest("POST","/user",user);
         var response = sendRequest(request);
+        System.out.println("hello?");
+        System.out.println(response);
     }
 
 
@@ -47,5 +54,27 @@ public class ServerFacade {
         } catch (Exception ex) {
             throw new ResponseException(ex.getMessage());
         }
+    }
+
+    private <T> T handleResponse(HttpResponse<String> response, Class<T> responseClass) throws ResponseException {
+        var status = response.statusCode();
+        if (!isSuccessful(status)) {
+            var body = response.body();
+            if (body != null) {
+                throw new ResponseException("57 err");
+            }
+
+            throw new ResponseException("60 err");
+        }
+
+        if (responseClass != null) {
+            return new Gson().fromJson(response.body(), responseClass);
+        }
+
+        return null;
+    }
+
+    private boolean isSuccessful(int status) {
+        return status / 100 == 2; //taken from petshop, my question though is why is it not just 200?
     }
 }
