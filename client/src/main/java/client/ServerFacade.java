@@ -38,13 +38,22 @@ public class ServerFacade {
         return properResult.username();
     }
 
+    public ListGamesResult listGames(){
+        verifyAuth();
+        var request = buildRequest("GET","/game",null);
+        var response = sendRequest(request);
+
+        ListGamesResult properResult = handleResponse(response,ListGamesResult.class);
+
+        return properResult;
+    }
+
     public String loginUser(LoginRequest requestData){
         var request = buildRequest("POST","/session",requestData);
         var response = sendRequest(request);
 
-        RegisterResult properResult = handleResponse(response,RegisterResult.class);
+        LoginResult properResult = handleResponse(response,LoginResult.class);
         this.authToken = properResult.authToken();
-        System.out.println(response);
         return properResult.username();
     }
 

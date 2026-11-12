@@ -1,5 +1,6 @@
 package client;
 
+import model.ListGamesRequest;
 import model.LoginRequest;
 import model.RegisterRequest;
 import model.UserData;
@@ -31,9 +32,8 @@ public class ServerFacadeTests {
     public void sampleTest() {
         Assertions.assertTrue(true);
         facade.registerUser(new RegisterRequest("fred","fred","fred"));
-        facade.logout();
-        facade.loginUser(new LoginRequest("fred","fred"));
-        facade.logout();
+        facade.listGames();
+
     }
 
 }
