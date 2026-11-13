@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.*;
 
@@ -28,6 +29,7 @@ public class ServerFacade {
         var response = sendRequest(request);
     }
 
+    //user stuff
     public String registerUser(RegisterRequest requestData){
         var request = buildRequest("POST","/user",requestData);
         var response = sendRequest(request);
@@ -36,16 +38,6 @@ public class ServerFacade {
         this.authToken = properResult.authToken();
 
         return properResult.username();
-    }
-
-    public ListGamesResult listGames(){
-        verifyAuth();
-        var request = buildRequest("GET","/game",null);
-        var response = sendRequest(request);
-
-        ListGamesResult properResult = handleResponse(response,ListGamesResult.class);
-
-        return properResult;
     }
 
     public String loginUser(LoginRequest requestData){
@@ -64,6 +56,26 @@ public class ServerFacade {
         var response = sendRequest(request);
     }
 
+    //games
+    public ListGamesResult listGames(){
+        verifyAuth();
+        var request = buildRequest("GET","/game",null);
+        var response = sendRequest(request);
+
+        ListGamesResult properResult = handleResponse(response,ListGamesResult.class);
+
+        return properResult;
+    }
+
+    public CreateGameResult createGame(String gameName){
+        verifyAuth();
+        var request = buildRequest("GET","/game",new CreateGameRequest(this.authToken,gameName));
+        var response = sendRequest(request);
+
+        CreateGameResult properResult = handleResponse(response,CreateGameResult.class);
+
+        return properResult;
+    }
     //awesome helpers
     private HttpRequest buildRequest(String method, String path, Object body) {
         var request = HttpRequest.newBuilder()

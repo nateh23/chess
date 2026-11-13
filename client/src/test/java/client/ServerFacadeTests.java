@@ -1,9 +1,6 @@
 package client;
 
-import model.ListGamesRequest;
-import model.LoginRequest;
-import model.RegisterRequest;
-import model.UserData;
+import model.*;
 import org.junit.jupiter.api.*;
 import server.Server;
 
@@ -33,7 +30,7 @@ public class ServerFacadeTests {
         Assertions.assertTrue(true);
         facade.registerUser(new RegisterRequest("fred","fred","fred"));
         facade.listGames();
-
+        facade.createGame("yes");
     }
 
 }

@@ -36,7 +36,7 @@ public class GameService extends Service{
 
         this.lowestGameId += 1;
 
-        return new CreateGameResult(gameData.gameID());
+        return new CreateGameResult(gameData.gameID(), gameData.game());
     }
 
     public void joinGame(JoinGameRequest request) throws DataAccessException{

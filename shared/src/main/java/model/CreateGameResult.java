@@ -1,4 +1,6 @@
 package model;
 
-public record CreateGameResult(int gameID) {
+import chess.ChessGame;
+
+public record CreateGameResult(int gameID, ChessGame game) {
 }
