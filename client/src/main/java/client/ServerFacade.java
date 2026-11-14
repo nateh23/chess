@@ -27,6 +27,8 @@ public class ServerFacade {
     public void clearDatabase(){
         var request = buildRequest("DELETE","/db",null);
         var response = sendRequest(request);
+
+        handleResponse(response,null);
     }
 
     //user stuff
@@ -54,6 +56,8 @@ public class ServerFacade {
 
         var request = buildRequest("DELETE","/session",null);
         var response = sendRequest(request);
+
+        handleResponse(response,null);
     }
 
     //games
@@ -62,9 +66,7 @@ public class ServerFacade {
         var request = buildRequest("GET","/game",null);
         var response = sendRequest(request);
 
-        ListGamesResult properResult = handleResponse(response,ListGamesResult.class);
-
-        return properResult;
+        return handleResponse(response,ListGamesResult.class);
     }
 
     public CreateGameResult createGame(String gameName){
@@ -72,10 +74,17 @@ public class ServerFacade {
         var request = buildRequest("GET","/game",new CreateGameRequest(this.authToken,gameName));
         var response = sendRequest(request);
 
-        CreateGameResult properResult = handleResponse(response,CreateGameResult.class);
-
-        return properResult;
+        return handleResponse(response,CreateGameResult.class);
     }
+
+    public void joinGame(String gameName){
+        verifyAuth();
+        var request = buildRequest("GET","/game",new CreateGameRequest(this.authToken,gameName));
+        var response = sendRequest(request);
+
+        handleResponse(response,null);
+    }
+
     //awesome helpers
     private HttpRequest buildRequest(String method, String path, Object body) {
         var request = HttpRequest.newBuilder()
@@ -111,12 +120,12 @@ public class ServerFacade {
     private <T> T handleResponse(HttpResponse<String> response, Class<T> responseClass) throws ResponseException {
         var status = response.statusCode();
         if (!isSuccessful(status)) {
-            var body = response.body();
-            if (body != null) {
-                throw new ResponseException("57 err");
-            }
+//            var body = response.body();
+//            if (body != null) {
+//                throw new ResponseException("57 err");
+//            }
 
-            throw new ResponseException("60 err");
+            throw new ResponseException("Request Error " + status);
         }
 
         if (responseClass != null) {
