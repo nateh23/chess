@@ -17,4 +17,6 @@ public class ClientStateMachine {
     public ClientState getCurrentState(){
         return this.currentState;
     }
+
+
 }
