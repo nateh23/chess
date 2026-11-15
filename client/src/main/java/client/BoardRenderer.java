@@ -25,7 +25,7 @@ public class BoardRenderer {
         renderColumnHelperRow(flipped);
     }
 
-    private void setRowbackgroundColor(int row, int column){
+    private void setBackgroundColor(int row, int column){
         int flip = ((row % 2) + column) % 2;
         if (flip == 0){
             System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
@@ -65,13 +65,13 @@ public class BoardRenderer {
         if (flipped){
             for (int i = 8; i >= 1; i--){
                 ChessPiece pieceAtLocation = board.getPiece(new ChessPosition(rowNumber,i));
-                setRowbackgroundColor(rowNumber,i);
+                setBackgroundColor(rowNumber,i);
                 setPiece(pieceAtLocation);
             }
         }else{
             for (int i = 1; i <= 8; i++){
                 ChessPiece pieceAtLocation = board.getPiece(new ChessPosition(rowNumber,i));
-                setRowbackgroundColor(rowNumber,i);
+                setBackgroundColor(rowNumber,i);
                 setPiece(pieceAtLocation);
             }
         }

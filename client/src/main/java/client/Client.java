@@ -19,28 +19,18 @@ public class Client {
             printPrompt();
             String line = scanner.nextLine();
 
-            if (this.ClientStateLogic.getCurrentState() == ClientStateMachine.ClientState.PreLogin){
-                preLoginEval(line);
-            }else{
-                postLoginEval(line);
-            }
+            result = this.ClientStateLogic.eval(line);
+
+            System.out.println();
         }
-    }
-
-    public void preLoginEval(String input){
-
-    }
-
-    public void postLoginEval(String input){
-
     }
 
     public void printPrompt(){
         System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
         if (this.ClientStateLogic.getCurrentState() == ClientStateMachine.ClientState.PreLogin){
-            System.out.println("\n + [PRELOGIN] >>>");
+            System.out.print("\n + [PRELOGIN] >>> ");
         }else{
-            System.out.println("\n + [POSTLOGIN] >>>");
+            System.out.print("\n + [POSTLOGIN] >>> ");
         }
         resetColor();
     }
@@ -48,9 +38,5 @@ public class Client {
     private void resetColor(){
         System.out.print(EscapeSequences.RESET_TEXT_COLOR);
         System.out.print(EscapeSequences.RESET_BG_COLOR);
-    }
-
-    private void presentBoard(){
-
     }
 }
