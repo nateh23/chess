@@ -1,5 +1,6 @@
 package client;
 
+import model.LoginRequest;
 import model.RegisterRequest;
 import ui.EscapeSequences;
 
@@ -67,7 +68,21 @@ public class ClientStateMachine {
                 ));
 
                 currentState = ClientState.PostLogin;
-                return "Successfully registered.";
+                return "Successfully registered as " + username + ".";
+        }else {
+            return cleanErrors("param");
+        }
+    }
+
+    private String login(String[]givenCommand){
+        if (givenCommand.length >= 3){
+            String username = facade.loginUser(new LoginRequest(
+                    givenCommand[1],
+                    givenCommand[2]
+            ));
+
+            currentState = ClientState.PostLogin;
+            return "Successfully logged in as " + username + ".";
         }else {
             return cleanErrors("param");
         }
@@ -80,6 +95,8 @@ public class ClientStateMachine {
             printCommands(preCommands);
         }else if(Objects.equals(givenCommand[0],"register")){
             return register(givenCommand);
+        }else if(Objects.equals(givenCommand[0],"login")){
+            return login(givenCommand);
         }else {
             return cleanErrors("rip");
         }

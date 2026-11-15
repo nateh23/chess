@@ -8,11 +8,14 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
     private final String serverUrl;
     private String authToken;
+
+    private ArrayList<ClientGame> gamesList;
 
     private void verifyAuth(){
         if (authToken == null){
@@ -61,12 +64,19 @@ public class ServerFacade {
     }
 
     //games
-    public ListGamesResult listGames(){
+    public ArrayList<ClientGame> listGames(){
         verifyAuth();
         var request = buildRequest("GET","/game",null);
         var response = sendRequest(request);
 
-        return handleResponse(response,ListGamesResult.class);
+        ListGamesResult result =  handleResponse(response,ListGamesResult.class);
+
+        gamesList.clear();
+        for (GameData game : result.games()){
+            gamesList.add(new ClientGame(game.gameName(),game.whiteUsername(),game.blackUsername()));
+        }
+
+        return gamesList;
     }
 
     public CreateGameResult createGame(String gameName){
