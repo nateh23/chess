@@ -2,6 +2,8 @@ package client;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import ui.EscapeSequences;
 
 public class BoardRenderer {
@@ -9,12 +11,60 @@ public class BoardRenderer {
     String[] columns = {"a","b","c","d","e","f","g","h"};
 
     public void RenderBoard(ChessBoard board, ChessGame.TeamColor perspective){
-        renderColumnHelperRow(perspective == ChessGame.TeamColor.WHITE);
+        boolean flipped = perspective != ChessGame.TeamColor.WHITE;
+        renderColumnHelperRow(flipped);
+        if (perspective == ChessGame.TeamColor.WHITE){
+            for (int i = 8; i >= 1; i--){
+                renderRow(board,i,flipped);
+            }
+        }else{
+            for (int i = 1; i <= 8; i++){
+                renderRow(board,i,flipped);
+            }
+        }
+        renderColumnHelperRow(flipped);
+    }
+
+    private void setRowbackgroundColor(int row, int column){
+        int flip = ((row % 2) + column) % 2;
+        if (flip == 0){
+            System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        }else{
+            System.out.print(EscapeSequences.SET_BG_COLOR_WHITE);
+        }
+    }
+
+    private void setPiece(ChessPiece piece){
+        System.out.print(EscapeSequences.EMPTY_LETTER);
+    }
+
+    private void renderRow(ChessBoard board,int rowNumber, boolean flipped){
+        setHelperColumn();
+        printPaddedString(String.valueOf(rowNumber));
+
+        if (flipped){
+            for (int i = 8; i >= 1; i--){
+                ChessPiece pieceAtLocation = board.getPiece(new ChessPosition(rowNumber,i));
+                setRowbackgroundColor(rowNumber,i);
+                setPiece(pieceAtLocation);
+            }
+        }else{
+            for (int i = 1; i <= 8; i++){
+                ChessPiece pieceAtLocation = board.getPiece(new ChessPosition(rowNumber,i));
+                setRowbackgroundColor(rowNumber,i);
+                setPiece(pieceAtLocation);
+            }
+        }
+
+        setHelperColumn();
+        printPaddedString(String.valueOf(rowNumber));
+
+        resetColor();
+        System.out.println();
     }
 
     private void renderColumnHelperRow(boolean flipped){
-        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-        System.out.print(EscapeSequences.SET_TEXT_COLOR_BLACK);
+        setHelperColumn();
 
         System.out.print(EscapeSequences.EMPTY_LETTER);
 
@@ -37,6 +87,11 @@ public class BoardRenderer {
     private void resetColor(){
         System.out.print(EscapeSequences.RESET_TEXT_COLOR);
         System.out.print(EscapeSequences.RESET_BG_COLOR);
+    }
+
+    private void setHelperColumn(){
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.SET_TEXT_COLOR_BLACK);
     }
 
     private void printPaddedString(String str){
