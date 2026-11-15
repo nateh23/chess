@@ -1,6 +1,9 @@
 package client;
 
+import chess.ChessBoard;
+import chess.ChessGame;
 import model.ClientGame;
+import model.CreateGameRequest;
 import model.LoginRequest;
 import model.RegisterRequest;
 import ui.EscapeSequences;
@@ -33,6 +36,7 @@ public class ClientStateMachine {
 
     private ClientState currentState;
     private ServerFacade facade;
+    private BoardRenderer renderer;
 
     public String cleanErrors(String code){
         return switch(code){
@@ -44,6 +48,7 @@ public class ClientStateMachine {
     public ClientStateMachine(String url){
         this.currentState = ClientState.PreLogin;
         this.facade = new ServerFacade(url);
+        this.renderer = new BoardRenderer();
     }
 
     private void printCommands(String[][]commands){
@@ -53,6 +58,16 @@ public class ClientStateMachine {
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
             System.out.print(" " + commands[i][1]);
             System.out.println();
+        }
+    }
+
+    private String createGame(String[]givenCommand){
+        if (givenCommand.length >= 2){
+            facade.createGame(givenCommand[1]);
+
+            return "Successfully create game " + givenCommand[1];
+        }else {
+            return cleanErrors("param");
         }
     }
 
@@ -109,7 +124,7 @@ public class ClientStateMachine {
             return register(givenCommand);
         }else if(Objects.equals(givenCommand[0],"login")){
             return login(givenCommand);
-        }else {
+        }else{
             return cleanErrors("rip");
         }
 
@@ -123,6 +138,8 @@ public class ClientStateMachine {
             printCommands(postCommands);
         }else if(Objects.equals(givenCommand[0],"list")){
             listGames();
+        }else if(Objects.equals(givenCommand[0],"create")){
+            createGame(givenCommand);
         }else {
             return cleanErrors("rip");
         }
