@@ -18,6 +18,15 @@ public class ClientStateMachine {
             {"help","list possible commands"}
     };
 
+    String[][]postCommands = {
+            {"logout","logout user"},
+            {"list","to see all chess games"},
+            {"create <GAME NAME>","to create a new chess game"},
+            {"join <GAME ID> <COLOR>","to watch a game"},
+            {"watch <GAME ID>","to watch a game"},
+            {"help","list possible commands"}
+    };
+
     private ClientState currentState;
     private ServerFacade facade;
 
@@ -43,22 +52,25 @@ public class ClientStateMachine {
         }
     }
 
+    private String logout(){
+        facade.logout();
+        currentState = ClientState.PreLogin;
+        return "Successfully logged out.";
+    }
+
     private String register(String[]givenCommand){
         if (givenCommand.length >= 4){
-            try {
                 String username = facade.registerUser(new RegisterRequest(
                         givenCommand[1],
                         givenCommand[2],
                         givenCommand[3]
                 ));
-            }catch (Exception ex){
-                System.out.println(ex.getMessage());
-            }
+
+                currentState = ClientState.PostLogin;
+                return "Successfully registered.";
         }else {
             return cleanErrors("param");
         }
-
-        return "";
     }
 
     private String evalPrelogin(String[]givenCommand){
@@ -75,16 +87,30 @@ public class ClientStateMachine {
         return "";
     }
 
+    private String evalPostLogin(String[]givenCommand){
+        if (Objects.equals(givenCommand[0], "logout")){
+            return logout();
+        }else if(Objects.equals(givenCommand[0],"help")){
+            printCommands(postCommands);
+        }else {
+            return cleanErrors("rip");
+        }
+
+        return "";
+    }
+
     public String eval(String line){
         String[]givenCommand = line.split(" ");
 
-        if (this.currentState == ClientState.PreLogin){
-            return evalPrelogin(givenCommand);
-        }else{
-
+        try {
+            if (this.currentState == ClientState.PreLogin){
+                return evalPrelogin(givenCommand);
+            }else{
+                return evalPostLogin(givenCommand);
+            }
+        }catch (Exception ex){
+            return ex.getMessage();
         }
-
-        return cleanErrors("rip");
     }
 
 

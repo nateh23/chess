@@ -66,7 +66,7 @@ public class Server {
         });
 
         javalin.exception(DatabaseConnectionError.class, (e, ctx) -> {
-            ctx.status(500).result(new Gson().toJson((Map.of("message","Error: db connection error"))));
+            ctx.status(500).result(new Gson().toJson((Map.of("message","Error: server error"))));
         });
     }
 
