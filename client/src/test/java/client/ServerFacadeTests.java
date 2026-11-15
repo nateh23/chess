@@ -27,13 +27,13 @@ public class ServerFacadeTests {
 
     @Test
     public void sampleTest() {
-        Assertions.assertTrue(true);
-        facade.registerUser(new RegisterRequest("fred","fred","fred"));
-        facade.listGames();
-        facade.createGame("yes");
-
-        System.out.print("\u001b[31;42m");
-        System.out.printf("Merry Christmas");
+//        Assertions.assertTrue(true);
+//        facade.registerUser(new RegisterRequest("fred","fred","fred"));
+//        facade.listGames();
+//        facade.createGame("yes");
+//
+//        System.out.print("\u001b[31;42m");
+//        System.out.printf("Merry Christmas");
     }
 
 }

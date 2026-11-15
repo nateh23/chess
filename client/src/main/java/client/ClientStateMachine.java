@@ -1,5 +1,6 @@
 package client;
 
+import model.RegisterRequest;
 import ui.EscapeSequences;
 
 import java.util.Objects;
@@ -11,7 +12,7 @@ public class ClientStateMachine {
     }
 
     String[][]preCommands = {
-            {"register <USERNAME> <PASSWORD> <EMAL>","to create an account"},
+            {"register <USERNAME> <PASSWORD> <EMAIL>","to create an account"},
             {"login <USERNAME> <PASSWORD>","to play chess"},
             {"quit","quit program"},
             {"help","list possible commands"}
@@ -19,6 +20,13 @@ public class ClientStateMachine {
 
     private ClientState currentState;
     private ServerFacade facade;
+
+    public String cleanErrors(String code){
+        return switch(code){
+            case "param" -> "Error: not enough arguments given";
+            default -> "Invalid Command; use help to see commands";
+        };
+    }
 
     public ClientStateMachine(String url){
         this.currentState = ClientState.PreLogin;
@@ -35,24 +43,48 @@ public class ClientStateMachine {
         }
     }
 
-    private String evalPrelogin(String line){
-        if (Objects.equals(line, "quit")){
+    private String register(String[]givenCommand){
+        if (givenCommand.length >= 4){
+            try {
+                String username = facade.registerUser(new RegisterRequest(
+                        givenCommand[1],
+                        givenCommand[2],
+                        givenCommand[3]
+                ));
+            }catch (Exception ex){
+                System.out.println(ex.getMessage());
+            }
+        }else {
+            return cleanErrors("param");
+        }
+
+        return "";
+    }
+
+    private String evalPrelogin(String[]givenCommand){
+        if (Objects.equals(givenCommand[0], "quit")){
             return "quit";
-        }else if(Objects.equals(line,"help")){
+        }else if(Objects.equals(givenCommand[0],"help")){
             printCommands(preCommands);
+        }else if(Objects.equals(givenCommand[0],"register")){
+            return register(givenCommand);
+        }else {
+            return cleanErrors("rip");
         }
 
         return "";
     }
 
     public String eval(String line){
+        String[]givenCommand = line.split(" ");
+
         if (this.currentState == ClientState.PreLogin){
-            return evalPrelogin(line);
+            return evalPrelogin(givenCommand);
         }else{
 
         }
 
-        return "";
+        return cleanErrors("rip");
     }
 
 

@@ -21,6 +21,9 @@ public class Client {
 
             result = this.ClientStateLogic.eval(line);
 
+            if (result != "quit"){
+                System.out.println(result);
+            }
             System.out.println();
         }
     }
