@@ -1,5 +1,7 @@
 package client;
 
+import ui.EscapeSequences;
+
 import java.util.Objects;
 
 public class ClientStateMachine {
@@ -7,6 +9,13 @@ public class ClientStateMachine {
         PreLogin,
         PostLogin
     }
+
+    String[][]preCommands = {
+            {"register <USERNAME> <PASSWORD> <EMAL>","to create an account"},
+            {"login <USERNAME> <PASSWORD>","to play chess"},
+            {"quit","quit program"},
+            {"help","list possible commands"}
+    };
 
     private ClientState currentState;
     private ServerFacade facade;
@@ -16,9 +25,21 @@ public class ClientStateMachine {
         this.facade = new ServerFacade(url);
     }
 
-    public String evalPrelogin(String line){
+    private void printCommands(String[][]commands){
+        for (int i = 0; i < commands.length; i++){
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
+            System.out.print(EscapeSequences.EMPTY + commands[i][0] + ":");
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+            System.out.print(" " + commands[i][1]);
+            System.out.println();
+        }
+    }
+
+    private String evalPrelogin(String line){
         if (Objects.equals(line, "quit")){
             return "quit";
+        }else if(Objects.equals(line,"help")){
+            printCommands(preCommands);
         }
 
         return "";
@@ -33,6 +54,7 @@ public class ClientStateMachine {
 
         return "";
     }
+
 
     public ClientState getCurrentState(){
         return this.currentState;
