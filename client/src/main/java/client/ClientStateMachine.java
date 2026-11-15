@@ -1,9 +1,12 @@
 package client;
 
+import model.ClientGame;
 import model.LoginRequest;
 import model.RegisterRequest;
 import ui.EscapeSequences;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class ClientStateMachine {
@@ -50,6 +53,15 @@ public class ClientStateMachine {
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
             System.out.print(" " + commands[i][1]);
             System.out.println();
+        }
+    }
+
+    private void listGames(){
+        ArrayList<ClientGame> gamesList = facade.listGames();
+        int i = 0;
+        for (ClientGame game: gamesList){
+            i += 1;
+            System.out.println(i + ". " + game.gameName());
         }
     }
 
@@ -109,6 +121,8 @@ public class ClientStateMachine {
             return logout();
         }else if(Objects.equals(givenCommand[0],"help")){
             printCommands(postCommands);
+        }else if(Objects.equals(givenCommand[0],"list")){
+            listGames();
         }else {
             return cleanErrors("rip");
         }

@@ -15,7 +15,7 @@ public class ServerFacade {
     private final String serverUrl;
     private String authToken;
 
-    private ArrayList<ClientGame> gamesList;
+    private ArrayList<ClientGame> gamesList = new ArrayList<>();
 
     private void verifyAuth(){
         if (authToken == null){
