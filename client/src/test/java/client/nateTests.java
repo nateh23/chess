@@ -8,9 +8,9 @@ public class nateTests {
     @Test
     public void yeah(){
         ChessBoard board = new ChessBoard();
+        board.resetBoard();
         BoardRenderer uh = new BoardRenderer();
 
-        uh.RenderBoard(board, ChessGame.TeamColor.WHITE);
-//        uh.RenderBoard(board, ChessGame.TeamColor.BLACK);
+        uh.RenderBoard(board, ChessGame.TeamColor.BLACK);
     }
 }

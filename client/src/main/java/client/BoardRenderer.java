@@ -35,7 +35,27 @@ public class BoardRenderer {
     }
 
     private void setPiece(ChessPiece piece){
-        System.out.print(EscapeSequences.EMPTY_LETTER);
+        if (piece != null){
+            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                System.out.print(EscapeSequences.SET_TEXT_COLOR_RED);
+            }else{
+                System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
+            }
+
+            String icon = switch (piece.getPieceType()) {
+                case ChessPiece.PieceType.ROOK -> "R";
+                case ChessPiece.PieceType.KING -> "K";
+                case ChessPiece.PieceType.PAWN -> "P";
+                case ChessPiece.PieceType.QUEEN -> "Q";
+                case ChessPiece.PieceType.BISHOP -> "B";
+                case ChessPiece.PieceType.KNIGHT -> "N";
+                default -> " ";
+            };
+
+            printPaddedString(icon);
+        }else {
+            System.out.print(EscapeSequences.EMPTY_LETTER);
+        }
     }
 
     private void renderRow(ChessBoard board,int rowNumber, boolean flipped){
