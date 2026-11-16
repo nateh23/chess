@@ -1,5 +1,7 @@
 package client;
 
+import dataaccess.DataAccessException;
+import dataaccess.InvalidAuthToken;
 import model.*;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -26,14 +28,38 @@ public class ServerFacadeTests {
 
 
     @Test
-    public void sampleTest() {
-//        Assertions.assertTrue(true);
-//        facade.registerUser(new RegisterRequest("fred","fred","fred"));
-//        facade.listGames();
-//        facade.createGame("yes");
-//
-//        System.out.print("\u001b[31;42m");
-//        System.out.printf("Merry Christmas");
+    public void coverageTest() {
+        Assertions.assertAll(
+                () -> Assertions.assertThrows(ResponseException.class, () -> facade.listGames()),
+                () -> Assertions.assertThrows(ResponseException.class, () ->
+                        facade.loginUser(new LoginRequest("tom", "tom"))),
+                () -> Assertions.assertThrows(ResponseException.class, () -> facade.logout())
+        );
+
+        facade.registerUser(new RegisterRequest("fred","fred","fred"));
+        facade.listGames();
+        facade.createGame("yes");
+        facade.joinGame("1","WHITE");
+
+        Assertions.assertAll(
+                () -> Assertions.assertThrows(ResponseException.class, () ->
+                        facade.registerUser(new RegisterRequest("fred","fred","fred"))),
+                () -> Assertions.assertThrows(ResponseException.class, () ->
+                        facade.joinGame("2","WHITE")),
+                () -> Assertions.assertThrows(ResponseException.class, () ->
+                        facade.joinGame("1","GREEN")),
+                () -> Assertions.assertThrows(ResponseException.class, () ->
+                        facade.observeGame("2"))
+        );
+
+        facade.logout();
+
+        facade.registerUser(new RegisterRequest("tom","tom","tom"));
+        facade.logout();
+        facade.loginUser(new LoginRequest("tom", "tom"));
+        facade.createGame("no");
+        facade.observeGame("2");
+        facade.joinGame("1","BLACK");
     }
 
 }

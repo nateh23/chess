@@ -1,7 +1,6 @@
 package client;
 
 import chess.ChessBoard;
-import chess.ChessGame;
 import com.google.gson.Gson;
 import model.*;
 
@@ -95,7 +94,7 @@ public class ServerFacade {
             int gameNumber = Integer.parseInt(gameListSpot);
             return gamesList.get(gameNumber - 1);
         } catch (Exception e) {
-            throw new RuntimeException("Client Error: Invalid game request");
+            throw new ResponseException("Client Error: Invalid game request");
         }
     }
 
@@ -111,7 +110,7 @@ public class ServerFacade {
         GameData game = getGame(gameListSpot);
 
         if (!(Objects.equals(teamColorString, "WHITE") || Objects.equals(teamColorString, "BLACK"))){
-            throw new RuntimeException("Client Error: Invalid team");
+            throw new ResponseException("Client Error: Invalid team");
         }
 
         var request = buildRequest("PUT","/game",new JoinGameRequest(this.authToken,teamColorString,game.gameID()));
