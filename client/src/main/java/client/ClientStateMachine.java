@@ -8,6 +8,7 @@ import model.RegisterRequest;
 import ui.EscapeSequences;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ClientStateMachine {
     public enum ClientState {
@@ -61,7 +62,11 @@ public class ClientStateMachine {
     private String joinGame(String[]givenCommand){
         if (givenCommand.length >= 3){
             ChessBoard board = facade.joinGame(givenCommand[1],givenCommand[2]);
-            renderer.RenderBoard(board, ChessGame.TeamColor.WHITE);
+
+            ChessGame.TeamColor colorView = Objects.equals(givenCommand[2], "WHITE") ?
+                    ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+
+            renderer.RenderBoard(board, colorView);
             return "";
         }else {
             return cleanErrors("param");

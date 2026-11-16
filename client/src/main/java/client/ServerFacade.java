@@ -21,7 +21,7 @@ public class ServerFacade {
 
     private void verifyAuth(){
         if (authToken == null){
-            throw new RuntimeException("attempt to run command without auth");
+            throw new ResponseException("attempt to run command without auth");
         }
     }
 

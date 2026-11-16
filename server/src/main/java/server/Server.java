@@ -46,27 +46,27 @@ public class Server {
 
         //exceptions
         javalin.exception(AlreadyTakenException.class, (e, ctx) -> {
-           ctx.status(403).result(new Gson().toJson((Map.of("message","Client Error: already taken"))));
+           ctx.status(403).result(new Gson().toJson((Map.of("message","Server Error: already taken"))));
         });
 
         javalin.exception(DataAccessException.class, (e, ctx) -> {
-            ctx.status(400).result(new Gson().toJson((Map.of("message","Client Error: bad request"))));
+            ctx.status(400).result(new Gson().toJson((Map.of("message","Server Error: bad request"))));
         });
 
         javalin.exception(InvalidCredentialsException.class, (e, ctx) -> {
-            ctx.status(401).result(new Gson().toJson((Map.of("message","Client Error: unauthorized"))));
+            ctx.status(401).result(new Gson().toJson((Map.of("message","Server Error: unauthorized"))));
         });
 
         javalin.exception(InvalidAuthToken.class, (e, ctx) -> {
-            ctx.status(401).result(new Gson().toJson((Map.of("message","Client Error: unauthorized"))));
+            ctx.status(401).result(new Gson().toJson((Map.of("message","Server Error: unauthorized"))));
         });
 
         javalin.exception(InvalidTeamException.class, (e, ctx) -> {
-            ctx.status(403).result(new Gson().toJson((Map.of("message","Client Error: already taken"))));
+            ctx.status(403).result(new Gson().toJson((Map.of("message","Server Error: already taken"))));
         });
 
         javalin.exception(DatabaseConnectionError.class, (e, ctx) -> {
-            ctx.status(500).result(new Gson().toJson((Map.of("message","Client Error: server error"))));
+            ctx.status(500).result(new Gson().toJson((Map.of("message","Server Error: server error"))));
         });
     }
 
