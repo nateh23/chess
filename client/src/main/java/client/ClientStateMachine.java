@@ -68,6 +68,16 @@ public class ClientStateMachine {
         }
     }
 
+    private String observeGame(String[]givenCommand){
+        if (givenCommand.length >= 2){
+            ChessBoard board = facade.observeGame(givenCommand[1]);
+            renderer.RenderBoard(board, ChessGame.TeamColor.WHITE);
+            return "";
+        }else {
+            return cleanErrors("param");
+        }
+    }
+
     private String createGame(String[]givenCommand){
         if (givenCommand.length >= 2){
             facade.createGame(givenCommand[1]);
@@ -152,6 +162,7 @@ public class ClientStateMachine {
             }
             case "create" -> createGame(givenCommand);
             case "join" -> joinGame(givenCommand);
+            case "observe" -> observeGame(givenCommand);
             default -> cleanErrors("rip");
         };
     }

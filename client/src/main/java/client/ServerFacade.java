@@ -85,6 +85,14 @@ public class ServerFacade {
         handleResponse(response,CreateGameResult.class);
     }
 
+    public ChessBoard observeGame(String gameListSpot) {
+        verifyAuth();
+        int gameListNumber = Integer.parseInt(gameListSpot);
+        GameData game = gamesList.get(gameListNumber - 1);
+
+        return game.game().getBoard();
+    }
+
     public ChessBoard joinGame(String gameListSpot, String teamColorString){
         verifyAuth();
 
