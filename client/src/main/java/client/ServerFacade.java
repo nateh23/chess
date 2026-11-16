@@ -71,7 +71,7 @@ public class ServerFacade {
         var response = sendRequest(request);
 
         ListGamesResult result =  handleResponse(response,ListGamesResult.class);
-        System.out.println(result.toString());
+
         gamesList.clear();
         for (GameData game : result.games()){
             gamesList.add(new ClientGame(game.gameName(),game.whiteUsername(),game.blackUsername()));
@@ -82,7 +82,7 @@ public class ServerFacade {
 
     public void createGame(String gameName){
         verifyAuth();
-        var request = buildRequest("GET","/game",new CreateGameRequest(this.authToken,gameName));
+        var request = buildRequest("POST","/game",new CreateGameRequest(this.authToken,gameName));
         var response = sendRequest(request);
 
         handleResponse(response,CreateGameResult.class);

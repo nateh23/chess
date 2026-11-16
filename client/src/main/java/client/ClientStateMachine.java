@@ -76,7 +76,11 @@ public class ClientStateMachine {
         int i = 0;
         for (ClientGame game: gamesList){
             i += 1;
-            System.out.println(i + ". " + game.gameName());
+            System.out.print(i + ".");
+            System.out.print("  Game name:" + game.gameName());
+            System.out.print("  White:" + (game.white() != null ? game.white() : "Empty"));
+            System.out.print("  Black:" + (game.black() != null ? game.black() : "Empty"));
+            System.out.println();
         }
     }
 
