@@ -27,8 +27,8 @@ public class ClientStateMachine {
             {"logout","logout user"},
             {"list","to see all chess games"},
             {"create <GAME NAME>","to create a new chess game"},
-            {"join <GAME ID> <COLOR>","to watch a game"},
-            {"watch <GAME ID>","to watch a game"},
+            {"join <GAME ID> <COLOR>","to join a game"},
+            {"observe <GAME ID>","to observe a game"},
             {"help","list possible commands"}
     };
 

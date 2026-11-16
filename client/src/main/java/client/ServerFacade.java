@@ -64,6 +64,7 @@ public class ServerFacade {
         var response = sendRequest(request);
 
         handleResponse(response,null);
+        this.authToken = null;
     }
 
     //games
@@ -88,8 +89,9 @@ public class ServerFacade {
     }
 
     private GameData getGame(String gameListSpot){
-        listGames(); //force update list to verify we have server list
         try {
+            listGames(); //force update list to verify we have server list
+
             int gameNumber = Integer.parseInt(gameListSpot);
             return gamesList.get(gameNumber - 1);
         } catch (Exception e) {
