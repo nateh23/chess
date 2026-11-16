@@ -2,15 +2,12 @@ package client;
 
 import chess.ChessBoard;
 import chess.ChessGame;
-import model.ClientGame;
-import model.CreateGameRequest;
+import model.GameData;
 import model.LoginRequest;
 import model.RegisterRequest;
 import ui.EscapeSequences;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ClientStateMachine {
     public enum ClientState {
@@ -61,6 +58,16 @@ public class ClientStateMachine {
         }
     }
 
+    private String joinGame(String[]givenCommand){
+        if (givenCommand.length >= 3){
+            ChessBoard board = facade.joinGame(givenCommand[1],givenCommand[2]);
+            renderer.RenderBoard(board, ChessGame.TeamColor.WHITE);
+            return "";
+        }else {
+            return cleanErrors("param");
+        }
+    }
+
     private String createGame(String[]givenCommand){
         if (givenCommand.length >= 2){
             facade.createGame(givenCommand[1]);
@@ -72,14 +79,14 @@ public class ClientStateMachine {
     }
 
     private void listGames(){
-        ArrayList<ClientGame> gamesList = facade.listGames();
+        ArrayList<GameData> gamesList = facade.listGames();
         int i = 0;
-        for (ClientGame game: gamesList){
+        for (GameData game: gamesList){
             i += 1;
             System.out.print(i + ".");
             System.out.print("  Game name:" + game.gameName());
-            System.out.print("  White:" + (game.white() != null ? game.white() : "Empty"));
-            System.out.print("  Black:" + (game.black() != null ? game.black() : "Empty"));
+            System.out.print("  White:" + (game.whiteUsername() != null ? game.whiteUsername() : "Empty"));
+            System.out.print("  Black:" + (game.blackUsername() != null ? game.blackUsername() : "Empty"));
             System.out.println();
         }
     }
@@ -144,6 +151,7 @@ public class ClientStateMachine {
                 yield "";
             }
             case "create" -> createGame(givenCommand);
+            case "join" -> joinGame(givenCommand);
             default -> cleanErrors("rip");
         };
     }
@@ -166,6 +174,4 @@ public class ClientStateMachine {
     public ClientState getCurrentState(){
         return this.currentState;
     }
-
-
 }

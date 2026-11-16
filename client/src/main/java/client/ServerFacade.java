@@ -16,7 +16,7 @@ public class ServerFacade {
     private final String serverUrl;
     private String authToken;
 
-    private ArrayList<ClientGame> gamesList = new ArrayList<>();
+    private ArrayList<GameData> gamesList = new ArrayList<>();
 
     private void verifyAuth(){
         if (authToken == null){
@@ -65,17 +65,14 @@ public class ServerFacade {
     }
 
     //games
-    public ArrayList<ClientGame> listGames(){
+    public ArrayList<GameData> listGames(){
         verifyAuth();
         var request = buildRequest("GET","/game",null);
         var response = sendRequest(request);
 
         ListGamesResult result =  handleResponse(response,ListGamesResult.class);
 
-        gamesList.clear();
-        for (GameData game : result.games()){
-            gamesList.add(new ClientGame(game.gameName(),game.whiteUsername(),game.blackUsername()));
-        }
+        gamesList = (ArrayList<GameData>) result.games();
 
         return gamesList;
     }
@@ -88,12 +85,25 @@ public class ServerFacade {
         handleResponse(response,CreateGameResult.class);
     }
 
-    public void joinGame(String gameName){
+    public ChessBoard joinGame(String gameListSpot, String teamColorString){
         verifyAuth();
-        var request = buildRequest("GET","/game",new CreateGameRequest(this.authToken,gameName));
+
+        int gameListNumber = Integer.parseInt(gameListSpot);
+        GameData game = gamesList.get(gameListNumber - 1);
+
+        ChessGame.TeamColor givenColor = switch (teamColorString){
+            case "WHITE" ->ChessGame.TeamColor.WHITE;
+            case "BLACK" ->ChessGame.TeamColor.BLACK;
+            default -> null;
+        };
+
+        var request = buildRequest("PUT","/game",new JoinGameRequest(this.authToken,teamColorString,game.gameID()));
         var response = sendRequest(request);
 
+        System.out.println(response);
         handleResponse(response,null);
+
+        return game.game().getBoard();
     }
 
     //awesome helpers
