@@ -120,35 +120,32 @@ public class ClientStateMachine {
     }
 
     private String evalPrelogin(String[]givenCommand){
-        if (Objects.equals(givenCommand[0], "quit")){
-            return "quit";
-        }else if(Objects.equals(givenCommand[0],"help")){
-            printCommands(preCommands);
-        }else if(Objects.equals(givenCommand[0],"register")){
-            return register(givenCommand);
-        }else if(Objects.equals(givenCommand[0],"login")){
-            return login(givenCommand);
-        }else{
-            return cleanErrors("rip");
-        }
-
-        return "";
+        return switch (givenCommand[0]) {
+            case "quit" -> "quit";
+            case "help" -> {
+                printCommands(preCommands);
+                yield "";
+            }
+            case "register" -> register(givenCommand);
+            case "login" -> login(givenCommand);
+            default -> cleanErrors("rip");
+        };
     }
 
     private String evalPostLogin(String[]givenCommand){
-        if (Objects.equals(givenCommand[0], "logout")){
-            return logout();
-        }else if(Objects.equals(givenCommand[0],"help")){
-            printCommands(postCommands);
-        }else if(Objects.equals(givenCommand[0],"list")){
-            listGames();
-        }else if(Objects.equals(givenCommand[0],"create")){
-            createGame(givenCommand);
-        }else {
-            return cleanErrors("rip");
-        }
-
-        return "";
+        return switch (givenCommand[0]) {
+            case "logout" -> logout();
+            case "help" -> {
+                printCommands(postCommands);
+                yield "";
+            }
+            case "list" -> {
+                listGames();
+                yield "";
+            }
+            case "create" -> createGame(givenCommand);
+            default -> cleanErrors("rip");
+        };
     }
 
     public String eval(String line){
