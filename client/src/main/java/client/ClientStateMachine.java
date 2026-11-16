@@ -177,7 +177,7 @@ public class ClientStateMachine {
                 return evalPostLogin(givenCommand);
             }
         }catch (Exception ex){
-            return ex.getMessage();
+            return ex.getMessage() != null ? ex.getMessage() : "Server Error: Failed to connect to server";
         }
     }
 

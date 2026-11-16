@@ -10,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
@@ -51,6 +52,7 @@ public class ServerFacade {
         var response = sendRequest(request);
 
         LoginResult properResult = handleResponse(response,LoginResult.class);
+
         this.authToken = properResult.authToken();
         return properResult.username();
     }
@@ -85,30 +87,34 @@ public class ServerFacade {
         handleResponse(response,CreateGameResult.class);
     }
 
+    private GameData getGame(String gameListSpot){
+        listGames(); //force update list to verify we have server list
+        try {
+            int gameNumber = Integer.parseInt(gameListSpot);
+            return gamesList.get(gameNumber - 1);
+        } catch (Exception e) {
+            throw new RuntimeException("Client Error: Invalid game request");
+        }
+    }
+
     public ChessBoard observeGame(String gameListSpot) {
         verifyAuth();
-        int gameListNumber = Integer.parseInt(gameListSpot);
-        GameData game = gamesList.get(gameListNumber - 1);
+        GameData game = getGame(gameListSpot);
 
         return game.game().getBoard();
     }
 
     public ChessBoard joinGame(String gameListSpot, String teamColorString){
         verifyAuth();
+        GameData game = getGame(gameListSpot);
 
-        int gameListNumber = Integer.parseInt(gameListSpot);
-        GameData game = gamesList.get(gameListNumber - 1);
-
-        ChessGame.TeamColor givenColor = switch (teamColorString){
-            case "WHITE" ->ChessGame.TeamColor.WHITE;
-            case "BLACK" ->ChessGame.TeamColor.BLACK;
-            default -> null;
-        };
+        if (!(Objects.equals(teamColorString, "WHITE") || Objects.equals(teamColorString, "BLACK"))){
+            throw new RuntimeException("Client Error: Invalid team");
+        }
 
         var request = buildRequest("PUT","/game",new JoinGameRequest(this.authToken,teamColorString,game.gameID()));
         var response = sendRequest(request);
 
-        System.out.println(response);
         handleResponse(response,null);
 
         return game.game().getBoard();
