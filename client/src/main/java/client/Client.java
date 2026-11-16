@@ -2,6 +2,7 @@ package client;
 
 import ui.EscapeSequences;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Client {
@@ -21,9 +22,10 @@ public class Client {
 
             result = this.ClientStateLogic.eval(line);
 
-            if (result != "quit"){
+            if (!Objects.equals(result, "quit") && !Objects.equals(result, "")){
                 System.out.println(result);
             }
+
             System.out.println();
         }
     }
@@ -31,9 +33,9 @@ public class Client {
     public void printPrompt(){
         System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
         if (this.ClientStateLogic.getCurrentState() == ClientStateMachine.ClientState.PreLogin){
-            System.out.print("\n + [PRELOGIN] >>> ");
+            System.out.print("[PRELOGIN] >>> ");
         }else{
-            System.out.print("\n + [POSTLOGIN] >>> ");
+            System.out.print("[POSTLOGIN] >>> ");
         }
         resetColor();
     }
