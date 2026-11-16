@@ -66,7 +66,7 @@ public class ClientStateMachine {
             ChessGame.TeamColor colorView = Objects.equals(givenCommand[2], "WHITE") ?
                     ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
 
-            renderer.RenderBoard(board, colorView);
+            renderer.renderBoard(board, colorView);
             return "";
         }else {
             return cleanErrors("param");
@@ -76,7 +76,7 @@ public class ClientStateMachine {
     private String observeGame(String[]givenCommand){
         if (givenCommand.length >= 2){
             ChessBoard board = facade.observeGame(givenCommand[1]);
-            renderer.RenderBoard(board, ChessGame.TeamColor.WHITE);
+            renderer.renderBoard(board, ChessGame.TeamColor.WHITE);
             return "";
         }else {
             return cleanErrors("param");

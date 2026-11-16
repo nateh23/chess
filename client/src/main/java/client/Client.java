@@ -6,10 +6,10 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Client {
-    ClientStateMachine ClientStateLogic;
+    ClientStateMachine clientStateLogic;
 
     public Client(int port){
-        this.ClientStateLogic = new ClientStateMachine("http://localhost:" + port);
+        this.clientStateLogic = new ClientStateMachine("http://localhost:" + port);
     }
 
     public void boot(){
@@ -20,7 +20,7 @@ public class Client {
             printPrompt();
             String line = scanner.nextLine();
 
-            result = this.ClientStateLogic.eval(line);
+            result = this.clientStateLogic.eval(line);
 
             if (!Objects.equals(result, "quit") && !Objects.equals(result, "")){
                 System.out.println(result);
@@ -32,7 +32,7 @@ public class Client {
 
     public void printPrompt(){
         System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
-        if (this.ClientStateLogic.getCurrentState() == ClientStateMachine.ClientState.PreLogin){
+        if (this.clientStateLogic.getCurrentState() == ClientStateMachine.ClientState.PreLogin){
             System.out.print("[PRELOGIN] >>> ");
         }else{
             System.out.print("[POSTLOGIN] >>> ");

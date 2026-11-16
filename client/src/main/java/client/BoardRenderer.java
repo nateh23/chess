@@ -10,7 +10,7 @@ public class BoardRenderer {
     public BoardRenderer(){}
     String[] columns = {"a","b","c","d","e","f","g","h"};
 
-    public void RenderBoard(ChessBoard board, ChessGame.TeamColor perspective){
+    public void renderBoard(ChessBoard board, ChessGame.TeamColor perspective){
         boolean flipped = perspective != ChessGame.TeamColor.WHITE;
         renderColumnHelperRow(flipped);
         if (perspective == ChessGame.TeamColor.WHITE){
